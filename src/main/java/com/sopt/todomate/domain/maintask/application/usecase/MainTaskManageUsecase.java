@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.SubTaskCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.EmptyRoutineDateException;
-import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
-import com.sopt.todomate.domain.maintask.presentation.dto.SubTaskDto;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
 import com.sopt.todomate.domain.user.domain.entity.User;
@@ -31,53 +31,50 @@ public class MainTaskManageUsecase {
 	private final SubTaskSaveService subTaskSaveService;
 
 	@Transactional
-	public MainTaskCreateResponse execute(MainTaskCreateRequest request, long userId) {
+	public MainTaskCreateResponse execute(MainTaskCommand command, long userId) {
+
 		User user = userGetService.findByUserId(userId);
-		LocalDateTime taskDate = request.taskDate();
+		LocalDateTime taskDate = command.taskDate();
 
-		MainTask firstMainTask = createAndSaveMainTask(request, user, taskDate);
-		List<SubTask> firstSubTasks = createAndSaveSubTasks(request.subTasks(), firstMainTask);
+		MainTask firstMainTask = createAndSaveMainTask(command, user, taskDate);
+		List<SubTask> firstSubTasks = createAndSaveSubTasks(command.subTasks(), firstMainTask);
 
-		if (isRecurringTask(request)) {
-			List<LocalDateTime> additionalDates = calculateAdditionalDates(request.startAt(), request.endAt(),
-				request.routineType());
+		if (isRecurringTask(command)) {
+			List<LocalDateTime> additionalDates = calculateAdditionalDates(
+				command.startAt(), command.endAt(), command.routineType());
 
 			for (LocalDateTime date : additionalDates) {
-				MainTask additionalTask = createAndSaveMainTask(request, user, date);
-				createAndSaveSubTasks(request.subTasks(), additionalTask);
+				MainTask additionalTask = createAndSaveMainTask(command, user, date);
+				createAndSaveSubTasks(command.subTasks(), additionalTask);
 			}
 		}
 
 		return MainTaskCreateResponse.from(firstMainTask, firstSubTasks);
 	}
 
-	private MainTask createAndSaveMainTask(MainTaskCreateRequest request, User user, LocalDateTime taskDate) {
+	private MainTask createAndSaveMainTask(MainTaskCommand command, User user, LocalDateTime taskDate) {
 		MainTask mainTask = MainTask.builder()
-			.taskContent(request.taskContent())
-			.startAt(request.startAt())
-			.endAt(request.endAt())
-			.routineType(request.routineType())
-			.priority(request.priority())
-			.category(request.category())
+			.taskContent(command.taskContent())
+			.startAt(command.startAt())
+			.endAt(command.endAt())
+			.routineType(command.routineType())
+			.priority(command.priority())
+			.category(command.category())
 			.taskDate(taskDate)
 			.user(user)
-			.completed(request.completed())
+			.completed(command.completed())
 			.build();
 
 		return mainTaskSaveService.save(mainTask);
 	}
 
-	private List<SubTask> createAndSaveSubTasks(List<SubTaskDto> subTaskDtos, MainTask mainTask) {
-		if (subTaskDtos == null || subTaskDtos.isEmpty()) {
+	private List<SubTask> createAndSaveSubTasks(List<SubTaskCommand> subTaskCommands, MainTask mainTask) {
+		if (subTaskCommands == null || subTaskCommands.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		List<SubTask> subTasks = subTaskDtos.stream()
-			.map(dto -> SubTask.builder()
-				.content(dto.content())
-				.completed(dto.completed())
-				.mainTask(mainTask)
-				.build())
+		List<SubTask> subTasks = subTaskCommands.stream()
+			.map(command -> command.toEntity(mainTask))
 			.collect(Collectors.toList());
 
 		return subTaskSaveService.saveAll(subTasks);
@@ -101,7 +98,7 @@ public class MainTaskManageUsecase {
 		return dates;
 	}
 
-	private boolean isRecurringTask(MainTaskCreateRequest request) {
-		return request.routineType() != RoutineType.NONE;
+	private boolean isRecurringTask(MainTaskCommand command) {
+		return command.routineType() != RoutineType.NONE;
 	}
 }

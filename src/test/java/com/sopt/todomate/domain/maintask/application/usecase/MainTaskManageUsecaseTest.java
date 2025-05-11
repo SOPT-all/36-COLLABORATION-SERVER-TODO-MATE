@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
@@ -23,7 +24,7 @@ import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.repository.UserRepository;
 
 @SpringBootTest
-@ActiveProfiles("test") // 테스트용 프로필 사용
+@ActiveProfiles("test")
 @Transactional
 public class MainTaskManageUsecaseTest {
 
@@ -64,7 +65,8 @@ public class MainTaskManageUsecaseTest {
 		);
 
 		// When - usecase 실행
-		MainTaskCreateResponse response = mainTaskManageUsecase.execute(request, savedUser.getId());
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
 
 		// Then - 응답 검증
 		assertNotNull(response);
@@ -108,7 +110,8 @@ public class MainTaskManageUsecaseTest {
 		);
 
 		// When
-		MainTaskCreateResponse response = mainTaskManageUsecase.execute(request, savedUser.getId());
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
 
 		// Then
 		assertNotNull(response);

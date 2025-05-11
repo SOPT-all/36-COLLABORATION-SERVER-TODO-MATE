@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
 import com.sopt.todomate.domain.maintask.application.usecase.MainTaskManageUsecase;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
@@ -22,7 +23,7 @@ public class MainTaskController {
 	@PostMapping()
 	public ResponseDto<MainTaskCreateResponse> create(@RequestHeader Long userId,
 		@RequestBody MainTaskCreateRequest request) {
-		MainTaskCreateResponse response = mainTaskManageUsecase.execute(request, userId);
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request), userId);
 		return ResponseDto.ok(response);
 	}
 }
