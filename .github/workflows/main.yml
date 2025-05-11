@@ -120,12 +120,12 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker stop task-management-container || true
-            docker rm task-management-container || true
+            sudo docker stop task-management-container || true
+            sudo docker rm task-management-container || true
             
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/task-management:latest
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/task-management:latest
             
-            docker run -d \
+            sudo docker run -d \
               --name task-management-container \
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
