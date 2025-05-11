@@ -29,7 +29,7 @@ public record MainTaskCreateResponse(
 			mainTask.getTaskContent(),
 			mainTask.getStartAt(),
 			mainTask.getEndAt(),
-			mainTask.getRoutinCycle(),
+			mainTask.getRoutineType(),
 			mainTask.getPriority(),
 			mainTask.getCategory(),
 			mainTask.getTaskDate(),

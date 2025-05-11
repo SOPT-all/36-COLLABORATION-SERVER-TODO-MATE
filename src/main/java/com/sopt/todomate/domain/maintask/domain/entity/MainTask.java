@@ -41,7 +41,7 @@ public class MainTask {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "routin_cycle")
-	private RoutineType routinCycle;
+	private RoutineType routineType;
 
 	@Column(name = "priority")
 	private Long priority;
@@ -69,7 +69,7 @@ public class MainTask {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;
-		this.routinCycle = routineType;
+		this.routineType = routineType;
 		this.priority = priority;
 		this.category = category;
 		this.taskDate = taskDate;

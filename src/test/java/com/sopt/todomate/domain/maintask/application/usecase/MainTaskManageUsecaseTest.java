@@ -142,7 +142,7 @@ public class MainTaskManageUsecaseTest {
 			assertEquals("반복 태스크", task.getTaskContent());
 			assertEquals(2L, task.getPriority());
 			assertEquals("Work", task.getCategory());
-			assertEquals(RoutineType.DAILY, task.getRoutinCycle());
+			assertEquals(RoutineType.DAILY, task.getRoutineType());
 			assertEquals(now, task.getStartAt());
 			assertEquals(endDate, task.getEndAt());
 			assertFalse(task.isCompleted());
