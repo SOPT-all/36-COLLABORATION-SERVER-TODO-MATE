@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,21 @@ public class SubTask {
 
 	@Column(name = "completed")
 	private Boolean completed;
+
+	@Builder
+	public SubTask(String content, MainTask mainTask, Boolean completed) {
+		this.content = content;
+		this.mainTask = mainTask;
+		this.completed = completed;
+	}
+
+	public static SubTask create(String content, MainTask mainTask, Boolean completed) {
+		return SubTask.builder()
+			.content(content)
+			.mainTask(mainTask)
+			.completed(completed)
+			.build();
+	}
 
 	public void addMainTask(MainTask mainTask) {
 		this.mainTask = mainTask;
