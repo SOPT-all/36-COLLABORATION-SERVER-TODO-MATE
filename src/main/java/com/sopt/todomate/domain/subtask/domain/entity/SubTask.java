@@ -24,7 +24,7 @@ public class SubTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "sub_task_id")
-	private Long subTaskId;
+	private Long id;
 
 	@Column(name = "content")
 	private String content;
@@ -53,6 +53,10 @@ public class SubTask {
 
 	public void addMainTask(MainTask mainTask) {
 		this.mainTask = mainTask;
+	}
+
+	public boolean isCompleted() {
+		return this.completed;
 	}
 
 }

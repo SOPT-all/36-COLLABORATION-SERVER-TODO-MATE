@@ -28,7 +28,7 @@ public class MainTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "main_task_id")
-	private Long mainTaskId;
+	private Long id;
 
 	@Column(name = "task_content")
 	private String taskContent;
@@ -74,7 +74,25 @@ public class MainTask {
 		this.completed = completed;
 	}
 
+	public static MainTask createRecurring(String content, User user, LocalDateTime taskDate,
+		LocalDateTime startAt, LocalDateTime endAt,
+		RoutineCycle routineCycle) {
+		return builder()
+			.taskContent(content)
+			.taskDate(taskDate)
+			.startAt(startAt)
+			.endAt(endAt)
+			.routineCycle(routineCycle)
+			.user(user)
+			.completed(false)
+			.build();
+	}
+
 	public void addAuthor(User user) {
 		this.user = user;
+	}
+
+	public boolean isCompleted() {
+		return this.completed;
 	}
 }
