@@ -117,7 +117,7 @@ public class MainTaskManageUsecaseTest {
 		assertNotNull(response);
 		assertEquals("반복 태스크", response.taskContent());
 		assertEquals(2, response.priority());
-		assertEquals(RoutineType.DAILY, response.routinCycle());
+		assertEquals(RoutineType.DAILY, response.routineType());
 
 		// 응답에 포함된 서브태스크 확인 (대표 태스크의 서브태스크)
 		assertEquals(1, response.subTasks().size());

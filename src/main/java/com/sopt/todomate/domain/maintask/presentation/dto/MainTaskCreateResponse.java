@@ -12,7 +12,7 @@ public record MainTaskCreateResponse(
 	String taskContent,
 	LocalDateTime startAt,
 	LocalDateTime endAt,
-	RoutineType routinCycle,
+	RoutineType routineType,
 	long priority,
 	String category,
 	LocalDateTime taskDate,

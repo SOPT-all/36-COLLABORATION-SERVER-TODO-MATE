@@ -37,6 +37,7 @@ public class MainTaskManageUsecase {
 		LocalDateTime taskDate = command.taskDate();
 
 		MainTask firstMainTask = createAndSaveMainTask(command, user, taskDate);
+		firstMainTask.updateTemplateTask(firstMainTask.getId());
 		List<SubTask> firstSubTasks = createAndSaveSubTasks(command.subTasks(), firstMainTask);
 
 		if (isRecurringTask(command)) {
@@ -45,6 +46,7 @@ public class MainTaskManageUsecase {
 
 			for (LocalDateTime date : additionalDates) {
 				MainTask additionalTask = createAndSaveMainTask(command, user, date);
+				additionalTask.updateTemplateTask(firstMainTask.getId());
 				createAndSaveSubTasks(command.subTasks(), additionalTask);
 			}
 		}

@@ -59,10 +59,13 @@ public class MainTask {
 	@Column(name = "completed")
 	private Boolean completed;
 
+	@Column(name = "template_task_id")
+	private Long templateTaskId;
+
 	@Builder
 	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineType routineType,
 		Long priority,
-		String category, LocalDateTime taskDate, User user, Boolean completed) {
+		String category, LocalDateTime taskDate, User user, Boolean completed, long templateTaskId) {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;
@@ -72,6 +75,7 @@ public class MainTask {
 		this.taskDate = taskDate;
 		this.user = user;
 		this.completed = completed;
+		this.templateTaskId = templateTaskId;
 	}
 
 	public static MainTask createRecurring(String content, User user, LocalDateTime taskDate,
@@ -94,5 +98,9 @@ public class MainTask {
 
 	public boolean isCompleted() {
 		return this.completed;
+	}
+
+	public void updateTemplateTask(long id) {
+		this.templateTaskId = id;
 	}
 }
