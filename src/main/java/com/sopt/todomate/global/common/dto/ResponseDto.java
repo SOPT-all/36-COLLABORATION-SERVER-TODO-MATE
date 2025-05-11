@@ -1,7 +1,7 @@
 package com.sopt.todomate.global.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sopt.todomate.global.common.constant.SuccessCode;
+import com.sopt.todomate.global.common.dto.constant.SuccessCode;
 
 import lombok.Getter;
 

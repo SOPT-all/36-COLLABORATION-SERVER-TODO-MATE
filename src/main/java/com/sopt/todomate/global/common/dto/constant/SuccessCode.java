@@ -1,4 +1,4 @@
-package com.sopt.todomate.global.common.constant;
+package com.sopt.todomate.global.common.dto.constant;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
