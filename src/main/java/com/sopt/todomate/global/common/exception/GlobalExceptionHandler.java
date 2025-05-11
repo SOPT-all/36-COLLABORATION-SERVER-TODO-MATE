@@ -13,6 +13,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sopt.todomate.global.common.exception.constant.ExceptionCode;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
