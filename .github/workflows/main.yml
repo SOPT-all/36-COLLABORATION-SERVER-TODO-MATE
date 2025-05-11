@@ -123,12 +123,12 @@ jobs:
             sudo docker stop task-management-container || true
             sudo docker rm task-management-container || true
             
-            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/task-management:latest
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/todomate:latest
             
             sudo docker run -d \
               --name task-management-container \
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
-              ${{ secrets.DOCKER_HUB_USERNAME }}/task-management:latest
+              ${{ secrets.DOCKER_HUB_USERNAME }}/todomate:latest
             
             docker system prune -f
