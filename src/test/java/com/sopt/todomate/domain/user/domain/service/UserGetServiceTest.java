@@ -29,15 +29,16 @@ class UserGetServiceTest {
 	@DisplayName("등록된 사용자를 id로 조회한다.")
 	@Test
 	void get() {
-		//given
+		// given
 		User user = User.builder().userName("testUser").build();
-		userRepository.save(user);
-		Long userId = user.getId();
-		//when
-		User findedUser = userGetService.findByUserId(userId);
-		//then
+		User savedUser = userRepository.save(user);
+		Long userId = savedUser.getId();
 
-		assertThat(findedUser.getId()).isEqualTo(1);
+		// when
+		User findedUser = userGetService.findByUserId(userId);
+
+		// then
+		assertThat(findedUser.getId()).isEqualTo(userId);
 		assertThat(findedUser.getUserName()).isEqualTo("testUser");
 	}
 
