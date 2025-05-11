@@ -32,12 +32,12 @@ class UserGetServiceTest {
 		//given
 		User user = User.builder().userName("testUser").build();
 		userRepository.save(user);
-		Long userId = user.getUserId();
+		Long userId = user.getId();
 		//when
 		User findedUser = userGetService.findByUserId(userId);
 		//then
 
-		assertThat(findedUser.getUserId()).isEqualTo(1);
+		assertThat(findedUser.getId()).isEqualTo(1);
 		assertThat(findedUser.getUserName()).isEqualTo("testUser");
 	}
 
@@ -47,7 +47,7 @@ class UserGetServiceTest {
 		//given
 		User user = User.builder().userName("testUser").build();
 		User savedUser = userRepository.save(user);
-		long invalidUserId = savedUser.getUserId() + 1;
+		long invalidUserId = savedUser.getId() + 1;
 
 		//when & then
 		assertThatThrownBy(() -> userGetService.findByUserId(invalidUserId))
