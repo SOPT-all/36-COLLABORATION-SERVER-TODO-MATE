@@ -41,7 +41,7 @@ public class MainTask {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "routin_cycle")
-	private RoutineCycle routinCycle;
+	private RoutineType routinCycle;
 
 	@Column(name = "priority")
 	private Long priority;
@@ -60,13 +60,13 @@ public class MainTask {
 	private Boolean completed;
 
 	@Builder
-	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineCycle routineCycle,
+	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineType routineType,
 		Long priority,
 		String category, LocalDateTime taskDate, User user, Boolean completed) {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;
-		this.routinCycle = routineCycle;
+		this.routinCycle = routineType;
 		this.priority = priority;
 		this.category = category;
 		this.taskDate = taskDate;
@@ -76,13 +76,13 @@ public class MainTask {
 
 	public static MainTask createRecurring(String content, User user, LocalDateTime taskDate,
 		LocalDateTime startAt, LocalDateTime endAt,
-		RoutineCycle routineCycle) {
+		RoutineType routineType) {
 		return builder()
 			.taskContent(content)
 			.taskDate(taskDate)
 			.startAt(startAt)
 			.endAt(endAt)
-			.routineCycle(routineCycle)
+			.routineType(routineType)
 			.user(user)
 			.completed(false)
 			.build();

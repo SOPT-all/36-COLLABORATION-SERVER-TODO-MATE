@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
-import com.sopt.todomate.domain.maintask.domain.entity.RoutineCycle;
+import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 
 public record MainTaskCreateResponse(
@@ -12,7 +12,7 @@ public record MainTaskCreateResponse(
 	String taskContent,
 	LocalDateTime startAt,
 	LocalDateTime endAt,
-	RoutineCycle routinCycle,
+	RoutineType routinCycle,
 	long priority,
 	String category,
 	LocalDateTime taskDate,
