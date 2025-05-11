@@ -8,6 +8,7 @@ public enum ExceptionCode {
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "c4000", "잘못된 요청입니다."),
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40010", "유저ID는 필수입니다."),
 	INVALID_ROUTINE_TYPE(HttpStatus.BAD_REQUEST, "c40011", "유효하지 않은 루틴타입 입니다."),
+	EMPTY_ROUTINE_DATE(HttpStatus.BAD_REQUEST, "c40021", "루틴 생성시 날짜는 모두 입력되어야 합니다."),
 
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
