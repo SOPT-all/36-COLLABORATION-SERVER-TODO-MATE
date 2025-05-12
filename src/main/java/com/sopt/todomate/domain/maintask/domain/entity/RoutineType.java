@@ -35,6 +35,13 @@ public enum RoutineType {
 	}
 
 	public LocalDateTime getNextDate(LocalDateTime date) {
-		return date.plusDays(days);
+		return switch (this) {
+			case NONE -> date;
+			case DAILY -> date.plusDays(1);
+			case WEEKDAY -> date.plusWeeks(1);
+			case BIWEEKLY -> date.plusWeeks(2);
+			case MONTHLY -> date.plusMonths(1);
+			case YEARLY -> date.plusYears(1);
+		};
 	}
 }
