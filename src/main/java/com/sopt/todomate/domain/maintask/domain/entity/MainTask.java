@@ -47,6 +47,7 @@ public class MainTask extends BaseEntity {
 	@Column(name = "priority")
 	private Long priority;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
 	private String category;
 
