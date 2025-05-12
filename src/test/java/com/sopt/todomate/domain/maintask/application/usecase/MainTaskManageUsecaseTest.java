@@ -74,7 +74,7 @@ public class MainTaskManageUsecaseTest {
 		assertEquals(1, response.subTasks().size());
 		assertEquals("통합테스트 서브태스크", response.subTasks().get(0).content());
 
-		MainTask savedMainTask = mainTaskRepository.findById(response.maintaskId()).orElse(null);
+		MainTask savedMainTask = mainTaskRepository.findById(response.mainTaskId()).orElse(null);
 		assertNotNull(savedMainTask);
 		assertEquals("통합테스트 태스크", savedMainTask.getTaskContent());
 		assertEquals(1L, savedMainTask.getPriority());

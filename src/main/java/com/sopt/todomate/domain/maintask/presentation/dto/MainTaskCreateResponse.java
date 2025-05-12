@@ -8,7 +8,7 @@ import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 
 public record MainTaskCreateResponse(
-	long maintaskId,
+	long mainTaskId,
 	String taskContent,
 	LocalDateTime startAt,
 	LocalDateTime endAt,
