@@ -3,6 +3,7 @@ package com.sopt.todomate.domain.maintask.domain.entity;
 import java.time.LocalDateTime;
 
 import com.sopt.todomate.domain.user.domain.entity.User;
+import com.sopt.todomate.global.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "main_tasks")
-public class MainTask {
+public class MainTask extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "main_task_id")

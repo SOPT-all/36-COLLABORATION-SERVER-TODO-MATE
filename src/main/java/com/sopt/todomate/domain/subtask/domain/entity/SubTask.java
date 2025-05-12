@@ -1,6 +1,7 @@
 package com.sopt.todomate.domain.subtask.domain.entity;
 
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
+import com.sopt.todomate.global.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "sub_tasks")
-public class SubTask {
+public class SubTask extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "sub_task_id")
