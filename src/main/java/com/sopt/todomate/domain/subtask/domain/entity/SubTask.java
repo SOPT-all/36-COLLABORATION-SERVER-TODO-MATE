@@ -34,7 +34,7 @@ public class SubTask extends BaseEntity {
 	@JoinColumn(name = "main_task_id")
 	private MainTask mainTask;
 
-	@Column(name = "completed")
+	@Column(name = "completed", nullable = false)
 	private Boolean completed;
 
 	@Builder

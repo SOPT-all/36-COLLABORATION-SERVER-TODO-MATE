@@ -12,6 +12,7 @@ import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.global.common.dto.ResponseDto;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,7 +23,7 @@ public class MainTaskController {
 
 	@PostMapping()
 	public ResponseDto<MainTaskCreateResponse> create(@RequestHeader Long userId,
-		@RequestBody MainTaskCreateRequest request) {
+		@Valid @RequestBody MainTaskCreateRequest request) {
 		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request), userId);
 		return ResponseDto.ok(response);
 	}

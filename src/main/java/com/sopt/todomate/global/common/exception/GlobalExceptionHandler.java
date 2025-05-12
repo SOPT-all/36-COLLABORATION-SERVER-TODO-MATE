@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -30,8 +29,9 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException() {
-		ExceptionResponse exceptionResponse = ExceptionResponse.of(ExceptionCode.INVALID_INPUT_VALUE);
+	public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+		String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+		ExceptionResponse exceptionResponse = ExceptionResponse.from(ExceptionCode.INVALID_INPUT_VALUE, errorMessage);
 		return new ResponseEntity<>(exceptionResponse, ExceptionCode.INVALID_INPUT_VALUE.getStatus());
 	}
 
@@ -65,21 +65,5 @@ public class GlobalExceptionHandler {
 		log.info("필드 누락: " + e.getHeaderName());
 		ExceptionResponse response = ExceptionResponse.of(ExceptionCode.INVALID_INPUT_VALUE);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ExceptionResponse> handleJsonParse(HttpMessageNotReadableException ex) {
-		Throwable cause = ex.getMostSpecificCause();
-
-		if (cause instanceof BusinessException businessException) {
-			ExceptionCode exceptionCode = businessException.getErrorCode();
-			return ResponseEntity
-				.status(exceptionCode.getStatus())
-				.body(ExceptionResponse.of(exceptionCode));
-		}
-
-		return ResponseEntity
-			.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body(ExceptionResponse.of(ExceptionCode.INTERNAL_SERVER_ERROR));
 	}
 }

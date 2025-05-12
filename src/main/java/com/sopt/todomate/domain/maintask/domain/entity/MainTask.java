@@ -31,7 +31,7 @@ public class MainTask extends BaseEntity {
 	@Column(name = "main_task_id")
 	private Long id;
 
-	@Column(name = "task_content")
+	@Column(name = "task_content", nullable = false)
 	private String taskContent;
 
 	@Column(name = "start_at")
@@ -41,26 +41,26 @@ public class MainTask extends BaseEntity {
 	private LocalDateTime endAt;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "routin_type")
+	@Column(name = "routin_type", nullable = false)
 	private RoutineType routineType;
 
 	@Column(name = "priority")
 	private Long priority;
 
-	@Column(name = "category")
+	@Column(name = "category", nullable = false)
 	private String category;
 
-	@Column(name = "task_date")
+	@Column(name = "task_date", nullable = false)
 	private LocalDateTime taskDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@Column(name = "completed")
+	@Column(name = "completed", nullable = false)
 	private Boolean completed;
 
-	@Column(name = "template_task_id")
+	@Column(name = "template_task_id", nullable = false)
 	private Long templateTaskId;
 
 	@Builder
