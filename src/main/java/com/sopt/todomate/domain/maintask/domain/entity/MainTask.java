@@ -3,6 +3,7 @@ package com.sopt.todomate.domain.maintask.domain.entity;
 import java.time.LocalDateTime;
 
 import com.sopt.todomate.domain.user.domain.entity.User;
+import com.sopt.todomate.global.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,13 +25,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "main_tasks")
-public class MainTask {
+public class MainTask extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "main_task_id")
-	private Long mainTaskId;
+	private Long id;
 
-	@Column(name = "task_content")
+	@Column(name = "task_content", nullable = false)
 	private String taskContent;
 
 	@Column(name = "start_at")
@@ -40,41 +41,67 @@ public class MainTask {
 	private LocalDateTime endAt;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "routin_cycle")
-	private RoutineCycle routinCycle;
+	@Column(name = "routin_type", nullable = false)
+	private RoutineType routineType;
 
 	@Column(name = "priority")
 	private Long priority;
 
-	@Column(name = "category")
+	@Column(name = "category", nullable = false)
 	private String category;
 
-	@Column(name = "task_date")
+	@Column(name = "task_date", nullable = false)
 	private LocalDateTime taskDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@Column(name = "completed")
+	@Column(name = "completed", nullable = false)
 	private Boolean completed;
 
+	@Column(name = "template_task_id", nullable = false)
+	private Long templateTaskId;
+
 	@Builder
-	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineCycle routineCycle,
+	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineType routineType,
 		Long priority,
-		String category, LocalDateTime taskDate, User user, Boolean completed) {
+		String category, LocalDateTime taskDate, User user, Boolean completed, long templateTaskId) {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;
-		this.routinCycle = routineCycle;
+		this.routineType = routineType;
 		this.priority = priority;
 		this.category = category;
 		this.taskDate = taskDate;
 		this.user = user;
 		this.completed = completed;
+		this.templateTaskId = templateTaskId;
+	}
+
+	public static MainTask createRecurring(String content, User user, LocalDateTime taskDate,
+		LocalDateTime startAt, LocalDateTime endAt,
+		RoutineType routineType) {
+		return builder()
+			.taskContent(content)
+			.taskDate(taskDate)
+			.startAt(startAt)
+			.endAt(endAt)
+			.routineType(routineType)
+			.user(user)
+			.completed(false)
+			.build();
 	}
 
 	public void addAuthor(User user) {
 		this.user = user;
+	}
+
+	public boolean isCompleted() {
+		return this.completed;
+	}
+
+	public void updateTemplateTask(long id) {
+		this.templateTaskId = id;
 	}
 }

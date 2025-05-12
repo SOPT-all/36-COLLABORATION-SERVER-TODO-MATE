@@ -13,6 +13,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sopt.todomate.global.common.exception.constant.ExceptionCode;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -26,8 +29,9 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException() {
-		ExceptionResponse exceptionResponse = ExceptionResponse.of(ExceptionCode.INVALID_INPUT_VALUE);
+	public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+		String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+		ExceptionResponse exceptionResponse = ExceptionResponse.from(ExceptionCode.INVALID_INPUT_VALUE, errorMessage);
 		return new ResponseEntity<>(exceptionResponse, ExceptionCode.INVALID_INPUT_VALUE.getStatus());
 	}
 

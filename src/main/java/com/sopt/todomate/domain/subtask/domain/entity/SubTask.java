@@ -1,6 +1,7 @@
 package com.sopt.todomate.domain.subtask.domain.entity;
 
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
+import com.sopt.todomate.global.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,11 +21,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "sub_tasks")
-public class SubTask {
+public class SubTask extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "sub_task_id")
-	private Long subTaskId;
+	private Long id;
 
 	@Column(name = "content")
 	private String content;
@@ -33,7 +34,7 @@ public class SubTask {
 	@JoinColumn(name = "main_task_id")
 	private MainTask mainTask;
 
-	@Column(name = "completed")
+	@Column(name = "completed", nullable = false)
 	private Boolean completed;
 
 	@Builder
@@ -53,6 +54,10 @@ public class SubTask {
 
 	public void addMainTask(MainTask mainTask) {
 		this.mainTask = mainTask;
+	}
+
+	public boolean isCompleted() {
+		return this.completed;
 	}
 
 }
