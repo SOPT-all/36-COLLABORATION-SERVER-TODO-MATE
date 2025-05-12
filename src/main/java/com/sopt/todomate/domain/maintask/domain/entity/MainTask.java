@@ -47,8 +47,9 @@ public class MainTask extends BaseEntity {
 	@Column(name = "priority")
 	private Long priority;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
-	private String category;
+	private CategoryType category;
 
 	@Column(name = "task_date", nullable = false)
 	private LocalDateTime taskDate;
@@ -66,7 +67,7 @@ public class MainTask extends BaseEntity {
 	@Builder
 	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineType routineType,
 		Long priority,
-		String category, LocalDateTime taskDate, User user, Boolean completed, long templateTaskId) {
+		CategoryType category, LocalDateTime taskDate, User user, Boolean completed, long templateTaskId) {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;

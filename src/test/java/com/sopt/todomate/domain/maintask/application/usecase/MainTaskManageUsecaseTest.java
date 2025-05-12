@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
@@ -58,7 +59,7 @@ public class MainTaskManageUsecaseTest {
 			null,       // endAt
 			RoutineType.NONE,       // routinCycle
 			1,        // priority
-			"Work",     // category
+			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
 			List.of(new SubTaskDto("통합테스트 서브태스크", false))
@@ -103,7 +104,7 @@ public class MainTaskManageUsecaseTest {
 			endDate,    // endAt
 			RoutineType.DAILY,    // routinCycle
 			2,          // priority
-			"Work",     // category
+			CategoryType.CATEGORY1,     // category
 			now,       // taskDate
 			false,      // completed
 			List.of(new SubTaskDto("반복 서브태스크", false))
@@ -141,7 +142,7 @@ public class MainTaskManageUsecaseTest {
 		for (MainTask task : savedMainTasks) {
 			assertEquals("반복 태스크", task.getTaskContent());
 			assertEquals(2L, task.getPriority());
-			assertEquals("Work", task.getCategory());
+			assertEquals(CategoryType.CATEGORY1, task.getCategory());
 			assertEquals(RoutineType.DAILY, task.getRoutineType());
 			assertEquals(now, task.getStartAt());
 			assertEquals(endDate, task.getEndAt());
