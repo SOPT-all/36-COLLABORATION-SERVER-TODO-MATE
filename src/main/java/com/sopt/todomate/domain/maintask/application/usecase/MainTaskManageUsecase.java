@@ -2,7 +2,6 @@ package com.sopt.todomate.domain.maintask.application.usecase;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
+import com.sopt.todomate.domain.subtask.exception.MaxSubTaskException;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
 
@@ -79,8 +79,9 @@ public class MainTaskManageUsecase {
 	}
 
 	private List<SubTask> createAndSaveSubTasks(List<SubTaskCommand> subTaskCommands, MainTask mainTask) {
-		if (subTaskCommands == null || subTaskCommands.isEmpty()) {
-			return Collections.emptyList();
+
+		if (subTaskCommands.size() > 3) {
+			throw new MaxSubTaskException();
 		}
 
 		List<SubTask> subTasks = subTaskCommands.stream()
@@ -126,6 +127,7 @@ public class MainTaskManageUsecase {
 
 			for (MainTask routineTask : mainTasks) {
 				routineTask.updateContent(command.taskContent());
+				mainTask.updateImportance(command.importance());
 				subTaskDeleteService.deleteAllByMainTask(routineTask);
 
 				List<SubTask> subTasks = command.subTasks().stream()
@@ -149,6 +151,9 @@ public class MainTaskManageUsecase {
 	}
 
 	private void updateSubTasks(MainTask mainTask, List<SubTaskUpdateCommand> subTaskCommands) {
+		if (subTaskCommands.size() > 3) {
+			throw new MaxSubTaskException();
+		}
 		subTaskDeleteService.deleteAllByMainTask(mainTask);
 
 		List<SubTask> subTasks = subTaskCommands.stream()
