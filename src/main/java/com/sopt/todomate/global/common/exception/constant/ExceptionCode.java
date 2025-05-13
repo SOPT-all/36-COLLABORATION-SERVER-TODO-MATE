@@ -16,6 +16,7 @@ public enum ExceptionCode {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "c4042", "사용자가 존재하지 않습니다."),
 	MAIN_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "c4043", "메인 태스크가 존재하지 않습니다."),
 	SUB_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "c4044", "서브 태스크가 존재하지 않습니다."),
+	SUB_TASK_NOT_INCLUDED(HttpStatus.NOT_FOUND, "c40441", "서브태스크가 해당 메인태스크에 속하지 않습니다."),
 
 	//405
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "c4050", "잘못된 HTTP method 요청입니다."),

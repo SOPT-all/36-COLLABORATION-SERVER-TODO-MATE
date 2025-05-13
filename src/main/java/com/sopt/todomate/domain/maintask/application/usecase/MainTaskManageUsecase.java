@@ -21,6 +21,7 @@ import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
+import com.sopt.todomate.domain.subtask.exception.SubTaskNotIncludeException;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
 
@@ -123,7 +124,7 @@ public class MainTaskManageUsecase {
 			SubTask subTask = subTaskGetService.findSubTaskById(subTaskCmd.id());
 
 			if (!subTask.getMainTask().getId().equals(mainTask.getId())) {
-				throw new IllegalArgumentException("해당 서브태스크는 메인태스크에 속하지 않습니다.");
+				throw new SubTaskNotIncludeException();
 			}
 			subTask.updateContent(subTaskCmd.content());
 		}
