@@ -22,7 +22,6 @@ import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
-import com.sopt.todomate.domain.subtask.exception.SubTaskNotIncludeException;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
 
@@ -129,7 +128,7 @@ public class MainTaskManageUsecase {
 				subTaskDeleteService.deleteAllByMainTask(routineTask);
 
 				List<SubTask> subTasks = command.subTasks().stream()
-					.map(updateCommand -> updateCommand.toEntity(routineTask))
+					.map(updateCommand -> updateCommand.toEntity(routineTask, false))
 					.toList();
 
 				subTaskSaveService.saveAll(subTasks);
@@ -138,13 +137,12 @@ public class MainTaskManageUsecase {
 	}
 
 	private void updateSubTasks(MainTask mainTask, List<SubTaskUpdateCommand> subTaskCommands) {
-		for (SubTaskUpdateCommand subTaskCmd : subTaskCommands) {
-			SubTask subTask = subTaskGetService.findSubTaskById(subTaskCmd.id());
+		subTaskDeleteService.deleteAllByMainTask(mainTask);
 
-			if (!subTask.getMainTask().getId().equals(mainTask.getId())) {
-				throw new SubTaskNotIncludeException();
-			}
-			subTask.updateContent(subTaskCmd.content());
-		}
+		List<SubTask> subTasks = subTaskCommands.stream()
+			.map(updateCommand -> updateCommand.toEntity(mainTask, updateCommand.completed()))
+			.toList();
+
+		subTaskSaveService.saveAll(subTasks);
 	}
 }

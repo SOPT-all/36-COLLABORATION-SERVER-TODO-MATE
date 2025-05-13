@@ -5,9 +5,10 @@ import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 
 public record SubTaskUpdateCommand(
 	long id,
-	String content
+	String content,
+	boolean completed
 ) {
-	public SubTask toEntity(MainTask mainTask) {
-		return SubTask.createCompletedFalse(this.content, mainTask);
+	public SubTask toEntity(MainTask mainTask, boolean completed) {
+		return SubTask.create(this.content, mainTask, completed);
 	}
 }
