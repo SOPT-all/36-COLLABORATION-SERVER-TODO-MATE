@@ -60,4 +60,8 @@ public class SubTask extends BaseEntity {
 		return this.completed;
 	}
 
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
 }

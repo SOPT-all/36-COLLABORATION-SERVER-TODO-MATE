@@ -105,4 +105,8 @@ public class MainTask extends BaseEntity {
 	public void updateTemplateTask(long id) {
 		this.templateTaskId = id;
 	}
+
+	public void updateContent(String content) {
+		this.taskContent = content;
+	}
 }

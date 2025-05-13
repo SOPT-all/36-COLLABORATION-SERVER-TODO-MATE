@@ -9,13 +9,17 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.application.dto.SubTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.SubTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
+import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.EmptyRoutineDateException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
+import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
@@ -29,6 +33,8 @@ public class MainTaskManageUsecase {
 	private final UserGetService userGetService;
 	private final MainTaskSaveService mainTaskSaveService;
 	private final SubTaskSaveService subTaskSaveService;
+	private final MainTaskGetService mainTaskGetService;
+	private final SubTaskGetService subTaskGetService;
 
 	@Transactional
 	public MainTaskCreateResponse execute(MainTaskCommand command, long userId) {
@@ -102,5 +108,24 @@ public class MainTaskManageUsecase {
 
 	private boolean isRecurringTask(MainTaskCommand command) {
 		return command.routineType() != RoutineType.NONE;
+	}
+
+	@Transactional
+	public void update(long mainTaskId, MainTaskUpdateCommand command, long userId) {
+		User user = userGetService.findByUserId(userId);
+		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
+		mainTask.updateContent(command.taskContent());
+		updateSubTasks(mainTask, command.subTasks());
+	}
+
+	private void updateSubTasks(MainTask mainTask, List<SubTaskUpdateCommand> subTaskCommands) {
+		for (SubTaskUpdateCommand subTaskCmd : subTaskCommands) {
+			SubTask subTask = subTaskGetService.findSubTaskById(subTaskCmd.id());
+
+			if (!subTask.getMainTask().getId().equals(mainTask.getId())) {
+				throw new IllegalArgumentException("해당 서브태스크는 메인태스크에 속하지 않습니다.");
+			}
+			subTask.updateContent(subTaskCmd.content());
+		}
 	}
 }
