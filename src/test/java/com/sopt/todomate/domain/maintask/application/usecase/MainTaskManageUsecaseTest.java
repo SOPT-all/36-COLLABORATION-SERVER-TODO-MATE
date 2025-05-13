@@ -275,7 +275,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"통합테스트 태스크",
 			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크"),
-				new SubTaskUpdateCommand(response.subTasks().get(2).subTaskId(), "변경된 서브태스크2")),
+				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2")),
 			false
 		);
 
