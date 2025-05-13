@@ -1,9 +1,12 @@
 package com.sopt.todomate.domain.maintask.application.usecase;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +16,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
+import com.sopt.todomate.domain.maintask.application.dto.SubTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
+import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.maintask.presentation.dto.SubTaskDto;
+import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.repository.SubTaskRepository;
+import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.repository.UserRepository;
 
@@ -40,6 +48,10 @@ public class MainTaskManageUsecaseTest {
 
 	@Autowired
 	private SubTaskRepository subTaskRepository;
+	@Autowired
+	private SubTaskGetService subTaskGetService;
+	@Autowired
+	private MainTaskGetService mainTaskGetService;
 
 	@Test
 	@DisplayName("단일 태스크 생성 통합 테스트")
@@ -191,5 +203,101 @@ public class MainTaskManageUsecaseTest {
 		return date1.getYear() == date2.getYear() &&
 			date1.getMonth() == date2.getMonth() &&
 			date1.getDayOfMonth() == date2.getDayOfMonth();
+	}
+
+	@DisplayName("사용자는 메인태스크의 내용을 수정할 수 있다.")
+	@Test
+	void updateMainTaskContents() {
+		//given
+		User testUser = User.builder()
+			.userName("반복태스크테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			null,       // startAt
+			null,       // endAt
+			RoutineType.NONE,       // routinCycle
+			1,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false))
+		);
+
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
+
+		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
+			"변경하는 태스크",
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "통합테스트 서브태스크")),
+			false
+		);
+
+		//when
+
+		mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser.getId());
+
+		//then
+		MainTask mainTask = mainTaskRepository.findById(response.mainTaskId()).get();
+		assertThat(mainTask.getTaskContent()).isEqualTo("변경하는 태스크");
+	}
+
+	@DisplayName("사용자는 서브태스크의 내용을 수정할 수 있다.")
+	@Test
+	void updateSubTasks() {
+		//given
+		User testUser = User.builder()
+			.userName("반복태스크테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			null,       // startAt
+			null,       // endAt
+			RoutineType.NONE,       // routinCycle
+			1,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false), new SubTaskDto("통합테스트 서브태스크2", false))
+		);
+
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
+
+		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
+			"통합테스트 태스크",
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크"),
+				new SubTaskUpdateCommand(response.subTasks().get(2).subTaskId(), "변경된 서브태스크2")),
+			false
+		);
+
+		//when
+
+		mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser.getId());
+
+		//then
+
+		Map<Long, String> expectedSubTaskContents = mainTaskUpdateCommand.subTasks().stream()
+			.collect(Collectors.toMap(
+				SubTaskUpdateCommand::id,
+				SubTaskUpdateCommand::content
+			));
+
+		for (Long subTaskId : expectedSubTaskContents.keySet()) {
+			SubTask savedSubTask = subTaskRepository.findById(subTaskId).orElse(null);
+
+			String expectedContent = expectedSubTaskContents.get(subTaskId);
+			assertThat(savedSubTask.getContent())
+				.as("서브태스크 ID %d의 내용이 업데이트되어야 합니다", subTaskId)
+				.isEqualTo(expectedContent);
+		}
 	}
 }
