@@ -18,10 +18,11 @@ public enum CategoryType {
 	@JsonCreator
 	public static CategoryType fromValue(String value) {
 
-		for (CategoryType type : values()) {
-			if (type.label.equals(value)) return type;
+		try {
+			return CategoryType.valueOf(value.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			throw new InvalidCategoryTypeException();
 		}
-		throw new InvalidCategoryTypeException();
 	}
 
 	@JsonValue

@@ -22,13 +22,12 @@ public enum Importance {
 	}
 
 	@JsonCreator
-	public static Importance fromValue(int value) {
-		for (Importance importance : values()) {
-			if (importance.value == value) {
-				return importance;
-			}
+	public static Importance fromValue(String value) {
+		try {
+			return Importance.valueOf(value.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			throw new InvalidImportanceException();
 		}
-		throw new InvalidImportanceException();
 	}
 
 	public static Comparator<Importance> comparator() {
