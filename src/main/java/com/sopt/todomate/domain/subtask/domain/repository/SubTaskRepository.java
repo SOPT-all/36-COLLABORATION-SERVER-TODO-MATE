@@ -11,4 +11,6 @@ import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 @Repository
 public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
 	List<SubTask> findAllByMainTask(MainTask mainTask);
+
+	void deleteAllByMainTask(MainTask mainTask);
 }

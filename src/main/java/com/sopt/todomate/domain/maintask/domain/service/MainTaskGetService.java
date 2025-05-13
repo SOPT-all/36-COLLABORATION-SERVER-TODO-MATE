@@ -1,5 +1,6 @@
 package com.sopt.todomate.domain.maintask.domain.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,5 +22,9 @@ public class MainTaskGetService {
 
 	public List<MainTask> findAllByTemplateId(long templateId) {
 		return mainTaskRepository.findAllByTemplateTaskId(templateId);
+	}
+
+	public List<MainTask> findAllByTemplateIdAndAfterDate(long templateId, LocalDateTime date) {
+		return mainTaskRepository.findAllByTemplateTaskIdAndTaskDateAfter(templateId, date);
 	}
 }

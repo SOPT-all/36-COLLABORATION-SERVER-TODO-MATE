@@ -52,6 +52,14 @@ public class SubTask extends BaseEntity {
 			.build();
 	}
 
+	public static SubTask createCompletedFalse(String content, MainTask mainTask) {
+		return SubTask.builder()
+			.content(content)
+			.mainTask(mainTask)
+			.completed(false)
+			.build();
+	}
+
 	public void addMainTask(MainTask mainTask) {
 		this.mainTask = mainTask;
 	}

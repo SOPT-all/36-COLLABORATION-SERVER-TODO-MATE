@@ -19,6 +19,7 @@ import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.EmptyRoutineDateException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
+import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
 import com.sopt.todomate.domain.subtask.exception.SubTaskNotIncludeException;
@@ -36,6 +37,7 @@ public class MainTaskManageUsecase {
 	private final SubTaskSaveService subTaskSaveService;
 	private final MainTaskGetService mainTaskGetService;
 	private final SubTaskGetService subTaskGetService;
+	private final SubTaskDeleteService subTaskDeleteService;
 
 	@Transactional
 	public MainTaskCreateResponse execute(MainTaskCommand command, long userId) {
@@ -117,6 +119,22 @@ public class MainTaskManageUsecase {
 		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
 		mainTask.updateContent(command.taskContent());
 		updateSubTasks(mainTask, command.subTasks());
+
+		if (command.changeAll()) {
+			List<MainTask> mainTasks = mainTaskGetService.findAllByTemplateIdAndAfterDate(mainTask.getTemplateTaskId(),
+				mainTask.getTaskDate());
+
+			for (MainTask routineTask : mainTasks) {
+				routineTask.updateContent(command.taskContent());
+				subTaskDeleteService.deleteAllByMainTask(routineTask);
+
+				List<SubTask> subTasks = command.subTasks().stream()
+					.map(updateCommand -> updateCommand.toEntity(routineTask))
+					.toList();
+
+				subTaskSaveService.saveAll(subTasks);
+			}
+		}
 	}
 
 	private void updateSubTasks(MainTask mainTask, List<SubTaskUpdateCommand> subTaskCommands) {
