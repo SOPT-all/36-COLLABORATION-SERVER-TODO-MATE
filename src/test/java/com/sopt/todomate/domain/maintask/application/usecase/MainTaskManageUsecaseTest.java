@@ -233,7 +233,7 @@ public class MainTaskManageUsecaseTest {
 
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경하는 태스크",
-			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "통합테스트 서브태스크")),
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "통합테스트 서브태스크", true)),
 			false
 		);
 
@@ -274,8 +274,8 @@ public class MainTaskManageUsecaseTest {
 
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"통합테스트 태스크",
-			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크"),
-				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2")),
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true),
+				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2", false)),
 			false
 		);
 
@@ -331,8 +331,8 @@ public class MainTaskManageUsecaseTest {
 
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경된 태스크 제목",
-			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크"),
-				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2")),
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true),
+				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2", false)),
 			true
 		);
 
@@ -363,6 +363,70 @@ public class MainTaskManageUsecaseTest {
 				.as("메인 태스크 ID %d의 두 번째 서브태스크 내용이 변경되어야 합니다", task.getId())
 				.isEqualTo("변경된 서브태스크2");
 		}
+	}
+
+	@DisplayName("사용자느 루틴에 모든 태스크의 개수를 한번에 줄일 수 있다")
+	@Test
+	void updateAllRoutineContentsIfDelete() {
+		//given
+
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime endDate = now.plusDays(2);
+
+		User testUser = User.builder()
+			.userName("반복태스크테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			now,       // startAt
+			endDate,       // endAt
+			RoutineType.DAILY,
+			1,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false), new SubTaskDto("통합테스트 서브태스크2", false))
+		);
+
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
+
+		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
+			"변경된 태스크 제목",
+			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true)),
+			true
+		);
+
+		//when
+		mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser.getId());
+
+		//then
+
+		Long templateId = mainTaskGetService.findByMainTaskId(response.mainTaskId()).getTemplateTaskId();
+
+		List<MainTask> allRoutineTasks = mainTaskGetService.findAllByTemplateId(templateId);
+
+		for (MainTask task : allRoutineTasks) {
+			assertThat(task.getTaskContent())
+				.as("메인 태스크 ID %d의 내용이 변경되어야 합니다", task.getId())
+				.isEqualTo("변경된 태스크 제목");
+
+			List<SubTask> subTasks = subTaskGetService.findAllByMainTask(task);
+
+			assertThat(subTasks).hasSize(1)
+				.as("메인 태스크 ID %d는 1개의 서브태스크를 가져야 합니다", task.getId());
+
+			assertThat(subTasks.get(0).getContent())
+				.as("메인 태스크 ID %d의 첫 번째 서브태스크 내용이 변경되어야 합니다", task.getId())
+				.isEqualTo("변경된 서브태스크");
+		}
+
+		MainTask mainTask = mainTaskGetService.findByMainTaskId(response.mainTaskId());
+		List<SubTask> subTasks = subTaskGetService.findAllByMainTask(mainTask);
+
+		assertThat(subTasks.get(0).getCompleted()).isTrue();
 	}
 
 }
