@@ -29,6 +29,7 @@ import com.sopt.todomate.domain.maintask.presentation.dto.SubTaskDto;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.repository.SubTaskRepository;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
+import com.sopt.todomate.domain.subtask.exception.MaxSubTaskException;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.repository.UserRepository;
 
@@ -96,6 +97,36 @@ public class MainTaskManageUsecaseTest {
 			subTaskRepository.findAllByMainTask(savedMainTask);
 		assertEquals(1, savedSubTasks.size());
 		assertEquals("통합테스트 서브태스크", savedSubTasks.get(0).getContent());
+	}
+
+	@Test
+	@DisplayName("유저는 한 태스크에 세개의 서브태스크만 생성할 수 있다.")
+	void testMaxSubtasks() {
+		// Given - 테스트 사용자 생성 및 저장
+		User testUser = User.builder()
+			.userName("통합테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		// 테스트 요청 생성
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			null,       // startAt
+			null,       // endAt
+			RoutineType.NONE,       // routinCycle
+			MEDIUM,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false), new SubTaskDto("통합테스트 서브태스크2", false),
+				new SubTaskDto("통합테스트 서브태스크3", false), new SubTaskDto("통합테스트 서브태스크4", false))
+		);
+
+		// when & then
+		assertThatThrownBy(() -> mainTaskManageUsecase.execute(MainTaskCommand.from(request), savedUser.getId()))
+			.isInstanceOf(MaxSubTaskException.class);
 	}
 
 	@Test
@@ -246,6 +277,47 @@ public class MainTaskManageUsecaseTest {
 		MainTask mainTask = mainTaskRepository.findById(response.mainTaskId()).get();
 		assertThat(mainTask.getTaskContent()).isEqualTo("변경하는 태스크");
 		assertThat(mainTask.getImportance()).isEqualTo(MEDIUM);
+	}
+
+	@DisplayName("사용자는 세개 초과의 서브태스크를 추가할 수 없다.")
+	@Test
+	void updateOverSubTaskMax() {
+		//given
+		User testUser = User.builder()
+			.userName("반복태스크테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			null,       // startAt
+			null,       // endAt
+			RoutineType.NONE,       // routinCycle
+			MEDIUM,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false))
+		);
+
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser.getId());
+
+		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
+			"변경하는 태스크",
+			List.of(new SubTaskUpdateCommand("통합테스트 서브태스크", true), new SubTaskUpdateCommand("통합테스트 서브태스크2", true),
+				new SubTaskUpdateCommand("통합테스트 서브태스크3", true), new SubTaskUpdateCommand("통합테스트 서브태스크4", true)),
+			MEDIUM,
+			false
+		);
+
+		//when & then
+		assertThatThrownBy(
+			() -> mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser.getId()))
+			.isInstanceOf(MaxSubTaskException.class);
+
 	}
 
 	@DisplayName("사용자는 서브태스크의 내용을 수정할 수 있다.")
