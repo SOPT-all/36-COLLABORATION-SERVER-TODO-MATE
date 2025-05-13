@@ -265,7 +265,6 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경하는 태스크",
 			List.of(new SubTaskUpdateCommand("통합테스트 서브태스크", true)),
-			MEDIUM,
 			false
 		);
 
@@ -309,7 +308,6 @@ public class MainTaskManageUsecaseTest {
 			"변경하는 태스크",
 			List.of(new SubTaskUpdateCommand("통합테스트 서브태스크", true), new SubTaskUpdateCommand("통합테스트 서브태스크2", true),
 				new SubTaskUpdateCommand("통합테스트 서브태스크3", true), new SubTaskUpdateCommand("통합테스트 서브태스크4", true)),
-			MEDIUM,
 			false
 		);
 
@@ -350,7 +348,7 @@ public class MainTaskManageUsecaseTest {
 			"통합테스트 태스크",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("변경된 서브태스크2", false)),
-			MEDIUM, false
+			false
 		);
 
 		//when
@@ -401,7 +399,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("변경된 서브태스크2", false)),
-			MEDIUM, true
+			true
 		);
 
 		//when
@@ -464,7 +462,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true)),
-			MEDIUM, true
+			true
 		);
 
 		//when
@@ -529,7 +527,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("새로 추가한 서브태스크", false)),
-			MEDIUM, true
+			true
 		);
 
 		//when
@@ -600,12 +598,12 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("새로 추가한 서브태스크", false)),
-			MEDIUM, true
+			true
 		);
 
 		//when & then
 		assertThatThrownBy(
-			() -> mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, testUser2.getId()))
+			() -> mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser2.getId()))
 			.isInstanceOf(AccessDeniedException.class);
 
 	}
