@@ -9,6 +9,7 @@ public enum ExceptionCode {
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40010", "유저ID는 필수입니다."),
 	INVALID_ROUTINE_TYPE(HttpStatus.BAD_REQUEST, "c40011", "유효하지 않은 루틴타입 입니다."),
 	INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "c40012", "유효하지 않은 카테고리 타입 입니다."),
+	INVALID_IMPORTANCE(HttpStatus.BAD_REQUEST, "c40013", "유효하지 않은 중요도 타입 입니다."),
 	EMPTY_ROUTINE_DATE(HttpStatus.BAD_REQUEST, "c40021", "루틴 생성시 날짜는 모두 입력되어야 합니다."),
 
 	//404

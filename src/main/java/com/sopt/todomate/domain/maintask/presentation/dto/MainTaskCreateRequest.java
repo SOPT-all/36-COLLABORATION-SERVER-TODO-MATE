@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
+import com.sopt.todomate.domain.maintask.domain.entity.Importance;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ public record MainTaskCreateRequest(
 	LocalDateTime endAt,
 	@NotNull(message = "루틴 종류는 비어있을 수 없습니다.")
 	RoutineType routineType,
-	long priority,
+	Importance importance,
 	@NotNull(message = "카테고리는 비어있을 수 없습니다.")
 	CategoryType category,
 	@NotNull(message = "일정 날짜는 비어있을 수 없습니다.")

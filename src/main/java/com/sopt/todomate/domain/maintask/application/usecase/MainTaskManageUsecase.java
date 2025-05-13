@@ -12,6 +12,7 @@ import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.application.dto.SubTaskCommand;
 import com.sopt.todomate.domain.maintask.application.dto.SubTaskUpdateCommand;
+import com.sopt.todomate.domain.maintask.domain.entity.Importance;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
@@ -20,7 +21,6 @@ import com.sopt.todomate.domain.maintask.exception.EmptyRoutineDateException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
-import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
@@ -35,7 +35,6 @@ public class MainTaskManageUsecase {
 	private final MainTaskSaveService mainTaskSaveService;
 	private final SubTaskSaveService subTaskSaveService;
 	private final MainTaskGetService mainTaskGetService;
-	private final SubTaskGetService subTaskGetService;
 	private final SubTaskDeleteService subTaskDeleteService;
 
 	@Transactional
@@ -68,7 +67,7 @@ public class MainTaskManageUsecase {
 			.startAt(command.startAt())
 			.endAt(command.endAt())
 			.routineType(command.routineType())
-			.priority(command.priority())
+			.importance(command.importance() == null ? Importance.LOW : command.importance())
 			.category(command.category())
 			.taskDate(taskDate)
 			.user(user)
@@ -117,6 +116,7 @@ public class MainTaskManageUsecase {
 		User user = userGetService.findByUserId(userId);
 		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
 		mainTask.updateContent(command.taskContent());
+		mainTask.updateImportance(command.importance());
 		updateSubTasks(mainTask, command.subTasks());
 
 		if (command.changeAll()) {

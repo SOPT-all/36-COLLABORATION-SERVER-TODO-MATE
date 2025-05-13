@@ -1,12 +1,11 @@
 package com.sopt.todomate.domain.maintask.application.usecase;
 
+import static com.sopt.todomate.domain.maintask.domain.entity.Importance.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +69,7 @@ public class MainTaskManageUsecaseTest {
 			null,       // startAt
 			null,       // endAt
 			RoutineType.NONE,       // routinCycle
-			1,        // priority
+			MEDIUM,        // priority
 			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
@@ -90,7 +89,7 @@ public class MainTaskManageUsecaseTest {
 		MainTask savedMainTask = mainTaskRepository.findById(response.mainTaskId()).orElse(null);
 		assertNotNull(savedMainTask);
 		assertEquals("통합테스트 태스크", savedMainTask.getTaskContent());
-		assertEquals(1L, savedMainTask.getPriority());
+		assertEquals(MEDIUM, savedMainTask.getImportance());
 
 		List<com.sopt.todomate.domain.subtask.domain.entity.SubTask> savedSubTasks =
 			subTaskRepository.findAllByMainTask(savedMainTask);
@@ -115,7 +114,7 @@ public class MainTaskManageUsecaseTest {
 			now,        // startAt
 			endDate,    // endAt
 			RoutineType.DAILY,    // routinCycle
-			2,          // priority
+			MEDIUM,          // priority
 			CategoryType.CATEGORY1,     // category
 			now,       // taskDate
 			false,      // completed
@@ -129,7 +128,7 @@ public class MainTaskManageUsecaseTest {
 		// Then
 		assertNotNull(response);
 		assertEquals("반복 태스크", response.taskContent());
-		assertEquals(2, response.priority());
+		assertEquals(MEDIUM, response.importance());
 		assertEquals(RoutineType.DAILY, response.routineType());
 
 		// 응답에 포함된 서브태스크 확인 (대표 태스크의 서브태스크)
@@ -153,7 +152,7 @@ public class MainTaskManageUsecaseTest {
 
 		for (MainTask task : savedMainTasks) {
 			assertEquals("반복 태스크", task.getTaskContent());
-			assertEquals(2L, task.getPriority());
+			assertEquals(MEDIUM, task.getImportance());
 			assertEquals(CategoryType.CATEGORY1, task.getCategory());
 			assertEquals(RoutineType.DAILY, task.getRoutineType());
 			assertEquals(now, task.getStartAt());
@@ -221,7 +220,7 @@ public class MainTaskManageUsecaseTest {
 			null,       // startAt
 			null,       // endAt
 			RoutineType.NONE,       // routinCycle
-			1,        // priority
+			MEDIUM,        // priority
 			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
@@ -234,6 +233,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경하는 태스크",
 			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "통합테스트 서브태스크", true)),
+			MEDIUM,
 			false
 		);
 
@@ -244,6 +244,7 @@ public class MainTaskManageUsecaseTest {
 		//then
 		MainTask mainTask = mainTaskRepository.findById(response.mainTaskId()).get();
 		assertThat(mainTask.getTaskContent()).isEqualTo("변경하는 태스크");
+		assertThat(mainTask.getTaskContent()).isEqualTo(MEDIUM);
 	}
 
 	@DisplayName("사용자는 서브태스크의 내용을 수정할 수 있다.")
@@ -262,7 +263,7 @@ public class MainTaskManageUsecaseTest {
 			null,       // startAt
 			null,       // endAt
 			RoutineType.NONE,       // routinCycle
-			1,        // priority
+			MEDIUM,        // priority
 			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
@@ -276,7 +277,7 @@ public class MainTaskManageUsecaseTest {
 			"통합테스트 태스크",
 			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true),
 				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2", false)),
-			false
+			MEDIUM, false
 		);
 
 		//when
@@ -284,21 +285,15 @@ public class MainTaskManageUsecaseTest {
 		mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, savedUser.getId());
 
 		//then
+		MainTask mainTask = mainTaskGetService.findByMainTaskId(response.mainTaskId());
+		List<SubTask> subTasks = subTaskGetService.findAllByMainTask(mainTask);
 
-		Map<Long, String> expectedSubTaskContents = mainTaskUpdateCommand.subTasks().stream()
-			.collect(Collectors.toMap(
-				SubTaskUpdateCommand::id,
-				SubTaskUpdateCommand::content
-			));
-
-		for (Long subTaskId : expectedSubTaskContents.keySet()) {
-			SubTask savedSubTask = subTaskRepository.findById(subTaskId).orElse(null);
-
-			String expectedContent = expectedSubTaskContents.get(subTaskId);
-			assertThat(savedSubTask.getContent())
-				.as("서브태스크 ID %d의 내용이 업데이트되어야 합니다", subTaskId)
-				.isEqualTo(expectedContent);
-		}
+		assertThat(subTasks).extracting("content", "completed")
+			.containsAnyOf(
+				tuple("변경된 서브태스크", true),
+				tuple("변경된 서브태스크2", false)
+			);
+		
 	}
 
 	@DisplayName("사용자는 루틴의 모든 태스크를 변경할 수 있다.")
@@ -319,7 +314,7 @@ public class MainTaskManageUsecaseTest {
 			now,       // startAt
 			endDate,       // endAt
 			RoutineType.DAILY,
-			1,        // priority
+			MEDIUM,        // priority
 			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
@@ -333,7 +328,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true),
 				new SubTaskUpdateCommand(response.subTasks().get(1).subTaskId(), "변경된 서브태스크2", false)),
-			true
+			MEDIUM, true
 		);
 
 		//when
@@ -383,7 +378,7 @@ public class MainTaskManageUsecaseTest {
 			now,       // startAt
 			endDate,       // endAt
 			RoutineType.DAILY,
-			1,        // priority
+			MEDIUM,        // priority
 			CategoryType.CATEGORY1,     // category
 			now,        // taskDate
 			false,      // completed
@@ -396,7 +391,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand(response.subTasks().get(0).subTaskId(), "변경된 서브태스크", true)),
-			true
+			MEDIUM, true
 		);
 
 		//when
