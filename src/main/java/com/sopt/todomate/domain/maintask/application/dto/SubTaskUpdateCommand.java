@@ -4,7 +4,6 @@ import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 
 public record SubTaskUpdateCommand(
-	long id,
 	String content,
 	boolean completed
 ) {
