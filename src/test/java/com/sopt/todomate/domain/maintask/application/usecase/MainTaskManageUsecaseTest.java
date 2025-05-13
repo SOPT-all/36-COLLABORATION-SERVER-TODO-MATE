@@ -22,6 +22,7 @@ import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
+import com.sopt.todomate.domain.maintask.exception.AccessDeniedException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.maintask.presentation.dto.SubTaskDto;
@@ -488,6 +489,53 @@ public class MainTaskManageUsecaseTest {
 		List<SubTask> subTasks = subTaskGetService.findAllByMainTask(mainTask);
 
 		assertThat(subTasks.get(0).getCompleted()).isTrue();
+	}
+
+	@DisplayName("사용자는 다른 사용자의 일정을 수정할 수 없다.")
+	@Test
+	void updateAnotherUsersTask() {
+		//given
+
+		LocalDateTime now = LocalDateTime.now();
+
+		User testUser = User.builder()
+			.userName("반복태스크테스트유저")
+			.build();
+
+		User testUser2 = User.builder()
+			.userName("반복태스크테스트유저2")
+			.build();
+
+		User savedUser1 = userRepository.save(testUser);
+		User savedUser2 = userRepository.save(testUser2);
+
+		MainTaskCreateRequest request = new MainTaskCreateRequest(
+			"통합테스트 태스크",
+			null,       // startAt
+			null,       // endAt
+			RoutineType.NONE,
+			MEDIUM,        // priority
+			CategoryType.CATEGORY1,     // category
+			now,        // taskDate
+			false,      // completed
+			List.of(new SubTaskDto("통합테스트 서브태스크", false))
+		);
+
+		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request),
+			savedUser1.getId());
+
+		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
+			"변경된 태스크 제목",
+			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
+				new SubTaskUpdateCommand("새로 추가한 서브태스크", false)),
+			MEDIUM, true
+		);
+
+		//when & then
+		assertThatThrownBy(
+			() -> mainTaskManageUsecase.update(response.mainTaskId(), mainTaskUpdateCommand, testUser2.getId()))
+			.isInstanceOf(AccessDeniedException.class);
+
 	}
 
 }
