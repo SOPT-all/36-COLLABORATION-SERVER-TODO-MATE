@@ -29,7 +29,7 @@ public class MainTaskController {
 	public ResponseDto<MainTaskCreateResponse> create(@RequestHeader Long userId,
 		@Valid @RequestBody MainTaskCreateRequest request) {
 		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request), userId);
-		return ResponseDto.ok(response);
+		return ResponseDto.created(response);
 	}
 
 	@PutMapping("/{taskId}")
