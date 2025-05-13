@@ -9,11 +9,19 @@ public enum ExceptionCode {
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40010", "유저ID는 필수입니다."),
 	INVALID_ROUTINE_TYPE(HttpStatus.BAD_REQUEST, "c40011", "유효하지 않은 루틴타입 입니다."),
 	INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "c40012", "유효하지 않은 카테고리 타입 입니다."),
+	INVALID_IMPORTANCE(HttpStatus.BAD_REQUEST, "c40013", "유효하지 않은 중요도 타입 입니다."),
 	EMPTY_ROUTINE_DATE(HttpStatus.BAD_REQUEST, "c40021", "루틴 생성시 날짜는 모두 입력되어야 합니다."),
+	MAX_SUBTASK(HttpStatus.BAD_REQUEST, "c40022", "서브테스크는 3개이상 생성할 수 없습니다."),
+
+	//403
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c40310", "다른 사람의 투두는 수정할 수 없습니다."),
 
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "c4042", "사용자가 존재하지 않습니다."),
+	MAIN_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "c4043", "메인 태스크가 존재하지 않습니다."),
+	SUB_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "c4044", "서브 태스크가 존재하지 않습니다."),
+	SUB_TASK_NOT_INCLUDED(HttpStatus.NOT_FOUND, "c40441", "서브태스크가 해당 메인태스크에 속하지 않습니다."),
 
 	//405
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "c4050", "잘못된 HTTP method 요청입니다."),

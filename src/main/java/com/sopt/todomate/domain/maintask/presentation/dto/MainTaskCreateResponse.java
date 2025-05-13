@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
+import com.sopt.todomate.domain.maintask.domain.entity.Importance;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
@@ -14,7 +15,7 @@ public record MainTaskCreateResponse(
 	LocalDateTime startAt,
 	LocalDateTime endAt,
 	RoutineType routineType,
-	long priority,
+	Importance importance,
 	CategoryType category,
 	LocalDateTime taskDate,
 	boolean completed,
@@ -31,7 +32,7 @@ public record MainTaskCreateResponse(
 			mainTask.getStartAt(),
 			mainTask.getEndAt(),
 			mainTask.getRoutineType(),
-			mainTask.getPriority(),
+			mainTask.getImportance(),
 			mainTask.getCategory(),
 			mainTask.getTaskDate(),
 			mainTask.isCompleted(),

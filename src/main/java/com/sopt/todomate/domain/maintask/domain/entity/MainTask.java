@@ -44,8 +44,9 @@ public class MainTask extends BaseEntity {
 	@Column(name = "routin_type", nullable = false)
 	private RoutineType routineType;
 
-	@Column(name = "priority")
-	private Long priority;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "importance", nullable = false)
+	private Importance importance;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
@@ -66,32 +67,18 @@ public class MainTask extends BaseEntity {
 
 	@Builder
 	private MainTask(String taskContent, LocalDateTime startAt, LocalDateTime endAt, RoutineType routineType,
-		Long priority,
+		Importance importance,
 		CategoryType category, LocalDateTime taskDate, User user, Boolean completed, long templateTaskId) {
 		this.taskContent = taskContent;
 		this.startAt = startAt;
 		this.endAt = endAt;
 		this.routineType = routineType;
-		this.priority = priority;
+		this.importance = importance;
 		this.category = category;
 		this.taskDate = taskDate;
 		this.user = user;
 		this.completed = completed;
 		this.templateTaskId = templateTaskId;
-	}
-
-	public static MainTask createRecurring(String content, User user, LocalDateTime taskDate,
-		LocalDateTime startAt, LocalDateTime endAt,
-		RoutineType routineType) {
-		return builder()
-			.taskContent(content)
-			.taskDate(taskDate)
-			.startAt(startAt)
-			.endAt(endAt)
-			.routineType(routineType)
-			.user(user)
-			.completed(false)
-			.build();
 	}
 
 	public void addAuthor(User user) {
@@ -104,5 +91,17 @@ public class MainTask extends BaseEntity {
 
 	public void updateTemplateTask(long id) {
 		this.templateTaskId = id;
+	}
+
+	public void updateContent(String content) {
+		this.taskContent = content;
+	}
+
+	public void updateImportance(Importance importance) {
+		this.importance = importance;
+	}
+
+	public boolean isAuthor(User user) {
+		return this.user.equals(user);
 	}
 }

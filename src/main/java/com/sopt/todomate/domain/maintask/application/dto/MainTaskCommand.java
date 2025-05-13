@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
+import com.sopt.todomate.domain.maintask.domain.entity.Importance;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 
@@ -14,7 +15,7 @@ public record MainTaskCommand(
 	LocalDateTime startAt,
 	LocalDateTime endAt,
 	RoutineType routineType,
-	long priority,
+	Importance importance,
 	CategoryType category,
 	LocalDateTime taskDate,
 	boolean completed,
@@ -32,7 +33,7 @@ public record MainTaskCommand(
 			request.startAt(),
 			request.endAt(),
 			request.routineType(),
-			request.priority(),
+			request.importance(),
 			request.category(),
 			request.taskDate(),
 			request.completed(),
