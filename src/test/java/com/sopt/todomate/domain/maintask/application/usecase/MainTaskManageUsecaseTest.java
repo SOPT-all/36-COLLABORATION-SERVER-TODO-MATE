@@ -265,7 +265,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경하는 태스크",
 			List.of(new SubTaskUpdateCommand("통합테스트 서브태스크", true)),
-			false
+			MEDIUM, false
 		);
 
 		//when
@@ -308,7 +308,7 @@ public class MainTaskManageUsecaseTest {
 			"변경하는 태스크",
 			List.of(new SubTaskUpdateCommand("통합테스트 서브태스크", true), new SubTaskUpdateCommand("통합테스트 서브태스크2", true),
 				new SubTaskUpdateCommand("통합테스트 서브태스크3", true), new SubTaskUpdateCommand("통합테스트 서브태스크4", true)),
-			false
+			MEDIUM, false
 		);
 
 		//when & then
@@ -348,6 +348,7 @@ public class MainTaskManageUsecaseTest {
 			"통합테스트 태스크",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("변경된 서브태스크2", false)),
+			MEDIUM,
 			false
 		);
 
@@ -399,6 +400,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("변경된 서브태스크2", false)),
+			MEDIUM,
 			true
 		);
 
@@ -462,6 +464,7 @@ public class MainTaskManageUsecaseTest {
 		MainTaskUpdateCommand mainTaskUpdateCommand = new MainTaskUpdateCommand(
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true)),
+			MEDIUM,
 			true
 		);
 
@@ -527,6 +530,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("새로 추가한 서브태스크", false)),
+			MEDIUM,
 			true
 		);
 
@@ -598,6 +602,7 @@ public class MainTaskManageUsecaseTest {
 			"변경된 태스크 제목",
 			List.of(new SubTaskUpdateCommand("변경된 서브태스크", true),
 				new SubTaskUpdateCommand("새로 추가한 서브태스크", false)),
+			MEDIUM,
 			true
 		);
 

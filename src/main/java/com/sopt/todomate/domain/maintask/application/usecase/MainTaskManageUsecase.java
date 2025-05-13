@@ -118,6 +118,7 @@ public class MainTaskManageUsecase {
 		User user = userGetService.findByUserId(userId);
 		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
 		mainTask.updateContent(command.taskContent());
+		mainTask.updateImportance(command.importance());
 		updateSubTasks(mainTask, command.subTasks());
 
 		if (command.changeAll()) {
@@ -126,6 +127,7 @@ public class MainTaskManageUsecase {
 
 			for (MainTask routineTask : mainTasks) {
 				routineTask.updateContent(command.taskContent());
+				routineTask.updateImportance(command.importance());
 				subTaskDeleteService.deleteAllByMainTask(routineTask);
 
 				List<SubTask> subTasks = command.subTasks().stream()
