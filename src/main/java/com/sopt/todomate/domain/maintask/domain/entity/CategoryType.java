@@ -1,7 +1,6 @@
 package com.sopt.todomate.domain.maintask.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.sopt.todomate.domain.maintask.exception.InvalidCategoryTypeException;
 
 public enum CategoryType {
@@ -25,7 +24,6 @@ public enum CategoryType {
 		}
 	}
 
-	@JsonValue
 	public String getLabel() {
 		return label;
 	}
