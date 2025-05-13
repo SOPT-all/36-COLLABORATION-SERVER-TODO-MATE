@@ -12,6 +12,9 @@ public enum ExceptionCode {
 	INVALID_IMPORTANCE(HttpStatus.BAD_REQUEST, "c40013", "유효하지 않은 중요도 타입 입니다."),
 	EMPTY_ROUTINE_DATE(HttpStatus.BAD_REQUEST, "c40021", "루틴 생성시 날짜는 모두 입력되어야 합니다."),
 
+	//403
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c40310", "다른 사람의 투두는 수정할 수 없습니다."),
+
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "c4042", "사용자가 존재하지 않습니다."),

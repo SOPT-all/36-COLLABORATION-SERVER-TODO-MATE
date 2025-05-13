@@ -100,4 +100,8 @@ public class MainTask extends BaseEntity {
 	public void updateImportance(Importance importance) {
 		this.importance = importance;
 	}
+
+	public boolean isAuthor(User user) {
+		return this.user.equals(user);
+	}
 }

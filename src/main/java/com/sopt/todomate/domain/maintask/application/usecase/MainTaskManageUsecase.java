@@ -17,6 +17,7 @@ import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
+import com.sopt.todomate.domain.maintask.exception.AccessDeniedException;
 import com.sopt.todomate.domain.maintask.exception.EmptyRoutineDateException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
@@ -114,7 +115,7 @@ public class MainTaskManageUsecase {
 	@Transactional
 	public void update(long mainTaskId, MainTaskUpdateCommand command, long userId) {
 		User user = userGetService.findByUserId(userId);
-		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
+		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
 		mainTask.updateContent(command.taskContent());
 		mainTask.updateImportance(command.importance());
 		updateSubTasks(mainTask, command.subTasks());
@@ -134,6 +135,17 @@ public class MainTaskManageUsecase {
 				subTaskSaveService.saveAll(subTasks);
 			}
 		}
+	}
+
+	private MainTask checkAuthorityByMainTaskId(long mainTaskId, User user) {
+		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
+
+		if (!mainTask.isAuthor(user)) {
+			throw new AccessDeniedException();
+		}
+
+		return mainTask;
+
 	}
 
 	private void updateSubTasks(MainTask mainTask, List<SubTaskUpdateCommand> subTaskCommands) {
