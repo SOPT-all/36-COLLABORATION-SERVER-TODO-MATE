@@ -41,7 +41,7 @@ public class MainTask extends BaseEntity {
 	private LocalDateTime endAt;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "routin_type", nullable = false)
+	@Column(name = "routine_type", nullable = false)
 	private RoutineType routineType;
 
 	@Enumerated(EnumType.STRING)
