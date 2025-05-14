@@ -25,4 +25,8 @@ public class SubTaskGetService {
 	public SubTask findSubTaskById(long subTaskId) {
 		return subTaskRepository.findById(subTaskId).orElseThrow(SubTaskNotFoundException::new);
 	}
+
+	public List<SubTask> findAllByMainTaskIds(List<Long> mainTaskIds) {
+		return subTaskRepository.findAllByMainTaskIds(mainTaskIds);
+	}
 }

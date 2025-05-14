@@ -1,5 +1,6 @@
 package com.sopt.todomate.domain.maintask.domain.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,5 +27,9 @@ public class MainTaskGetService {
 
 	public List<MainTask> findAllByTemplateIdAndAfterDate(long templateId, LocalDateTime date) {
 		return mainTaskRepository.findAllByTemplateTaskIdAndTaskDateAfter(templateId, date);
+	}
+
+	public List<MainTask> findAllByUserIdAndDateRange(Long userId, LocalDateTime start, LocalDateTime end) {
+		return mainTaskRepository.findAllByUserIdAndDateRange(userId, start, end);
 	}
 }
