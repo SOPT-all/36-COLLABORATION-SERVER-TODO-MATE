@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sopt.todomate.global.common.exception.constant.ExceptionCode;
@@ -39,6 +40,21 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ExceptionResponse> handleNoHandlerFoundException() {
 		ExceptionResponse exceptionResponse = ExceptionResponse.of(ExceptionCode.NOT_FOUND);
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ExceptionResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+		if ("date".equals(ex.getName())) {
+			return new ResponseEntity<>(
+				ExceptionResponse.of(ExceptionCode.INVALID_DATE_FORMAT),
+				ExceptionCode.INVALID_DATE_FORMAT.getStatus()
+			);
+		}
+
+		return new ResponseEntity<>(
+			ExceptionResponse.of(ExceptionCode.INVALID_INPUT_VALUE),
+			ExceptionCode.INVALID_INPUT_VALUE.getStatus()
+		);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)

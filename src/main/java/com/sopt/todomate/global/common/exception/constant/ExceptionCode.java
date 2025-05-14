@@ -10,6 +10,7 @@ public enum ExceptionCode {
 	INVALID_ROUTINE_TYPE(HttpStatus.BAD_REQUEST, "c40011", "유효하지 않은 루틴타입 입니다."),
 	INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "c40012", "유효하지 않은 카테고리 타입 입니다."),
 	INVALID_IMPORTANCE(HttpStatus.BAD_REQUEST, "c40013", "유효하지 않은 중요도 타입 입니다."),
+	INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "c40014", "날짜 형식은 yyyy-MM-dd이어야 합니다."),
 	EMPTY_ROUTINE_DATE(HttpStatus.BAD_REQUEST, "c40021", "루틴 생성시 날짜는 모두 입력되어야 합니다."),
 	MAX_SUBTASK(HttpStatus.BAD_REQUEST, "c40022", "서브테스크는 3개이상 생성할 수 없습니다."),
 
