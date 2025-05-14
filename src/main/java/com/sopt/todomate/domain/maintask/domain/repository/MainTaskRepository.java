@@ -21,4 +21,15 @@ public interface MainTaskRepository extends JpaRepository<MainTask, Long> {
 	List<MainTask> findAllByTemplateTaskIdAndTaskDateAfter(
 		@Param("templateId") long templateId,
 		@Param("date") LocalDateTime date);
+
+	@Query("""
+		    SELECT m FROM MainTask m
+		    WHERE m.user.id = :userId
+		    AND m.taskDate >= :start AND m.taskDate < :end
+		""")
+	List<MainTask> findAllByUserIdAndDateRange(
+		@Param("userId") Long userId,
+		@Param("start") LocalDateTime start,
+		@Param("end") LocalDateTime end
+	);
 }
