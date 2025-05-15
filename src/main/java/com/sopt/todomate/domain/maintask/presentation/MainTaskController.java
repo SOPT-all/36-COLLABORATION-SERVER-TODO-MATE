@@ -54,6 +54,6 @@ public class MainTaskController {
 	public ResponseDto<Void> update(@RequestHeader Long userId, @PathVariable Long taskId,
 		@Valid @RequestBody MainTaskUpdateRequest request) {
 		mainTaskManageUsecase.update(userId, taskId, MainTaskUpdateCommand.from(request));
-		return ResponseDto.okWithoutContent();
+		return ResponseDto.noContent();
 	}
 }

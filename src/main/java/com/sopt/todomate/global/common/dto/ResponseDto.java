@@ -26,8 +26,8 @@ public class ResponseDto<T> {
 		return of(SuccessCode.OK, data);
 	}
 
-	public static ResponseDto<Void> okWithoutContent() {
-		return of(SuccessCode.OK, null);
+	public static ResponseDto<Void> noContent() {
+		return of(SuccessCode.NO_CONTENT, null);
 	}
 
 	public static <T> ResponseDto<T> created(T data) {
