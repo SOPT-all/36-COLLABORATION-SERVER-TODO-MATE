@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.user.domain.entity.User;
 
@@ -32,4 +33,6 @@ public interface MainTaskRepository extends JpaRepository<MainTask, Long> {
 		@Param("start") LocalDateTime start,
 		@Param("end") LocalDateTime end
 	);
+
+	int countByCategoryAndUser(CategoryType categoryType, User user);
 }

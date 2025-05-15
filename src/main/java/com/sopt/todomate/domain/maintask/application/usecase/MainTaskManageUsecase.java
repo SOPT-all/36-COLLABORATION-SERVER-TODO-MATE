@@ -11,6 +11,7 @@ import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.AccessDeniedException;
+import com.sopt.todomate.domain.maintask.exception.MaxMainTaskException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
@@ -35,6 +36,10 @@ public class MainTaskManageUsecase {
 	public MainTaskCreateResponse createMainTask(MainTaskCommand command, long userId) {
 
 		User user = userGetService.findByUserId(userId);
+
+		if (mainTaskGetService.findAmountByCategory(user, command.category()) >= 2) {
+			throw new MaxMainTaskException();
+		}
 
 		MainTask mainTask = MainTask.createMainTaskWithoutRoutine(command.taskContent(), command.category(),
 			command.taskDate(), user);
