@@ -44,11 +44,11 @@ public class SubTask extends BaseEntity {
 		this.completed = completed;
 	}
 
-	public static SubTask create(String content, MainTask mainTask, Boolean completed) {
+	public static SubTask createDefaultSubTask(String content, MainTask mainTask) {
 		return SubTask.builder()
 			.content(content)
 			.mainTask(mainTask)
-			.completed(completed)
+			.completed(false)
 			.build();
 	}
 

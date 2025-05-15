@@ -16,6 +16,6 @@ public record SubTaskCommand(
 	}
 
 	public SubTask toEntity(MainTask mainTask) {
-		return SubTask.create(this.content, mainTask, this.completed);
+		return SubTask.createDefaultSubTask(this.content, mainTask);
 	}
 }

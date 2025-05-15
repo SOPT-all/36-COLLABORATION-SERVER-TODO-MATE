@@ -13,10 +13,12 @@ import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.AccessDeniedException;
 import com.sopt.todomate.domain.maintask.exception.MaxMainTaskException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
+import com.sopt.todomate.domain.subtask.application.dto.SubTaskCreateCommand;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskDeleteService;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskSaveService;
 import com.sopt.todomate.domain.subtask.exception.MaxSubTaskException;
+import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateResponse;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
 
@@ -47,6 +49,19 @@ public class MainTaskManageUsecase {
 		mainTaskSaveService.save(mainTask);
 
 		return MainTaskCreateResponse.from(mainTask);
+	}
+
+	@Transactional
+	public SubTaskCreateResponse createSubTask(long userId, long mainTaskId, SubTaskCreateCommand command) {
+		User user = userGetService.findByUserId(userId);
+
+		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
+
+		SubTask subTask = SubTask.createDefaultSubTask(command.content(), mainTask);
+
+		SubTask savedSubTask = subTaskSaveService.save(subTask);
+
+		return SubTaskCreateResponse.of(subTask);
 	}
 
 	@Transactional
