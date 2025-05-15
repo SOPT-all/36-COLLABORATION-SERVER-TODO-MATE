@@ -28,7 +28,7 @@ public class MainTaskController {
 	@PostMapping()
 	public ResponseDto<MainTaskCreateResponse> create(@RequestHeader Long userId,
 		@Valid @RequestBody MainTaskCreateRequest request) {
-		MainTaskCreateResponse response = mainTaskManageUsecase.execute(MainTaskCommand.from(request), userId);
+		MainTaskCreateResponse response = mainTaskManageUsecase.createMainTask(MainTaskCommand.from(request), userId);
 		return ResponseDto.created(response);
 	}
 
