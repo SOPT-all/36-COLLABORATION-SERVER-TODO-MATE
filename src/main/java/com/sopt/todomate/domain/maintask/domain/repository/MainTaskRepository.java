@@ -26,8 +26,9 @@ public interface MainTaskRepository extends JpaRepository<MainTask, Long> {
 		    SELECT m FROM MainTask m
 		    WHERE m.user.id = :userId
 		    AND m.taskDate >= :start AND m.taskDate < :end
+		    ORDER BY m.createdAt DESC
 		""")
-	List<MainTask> findAllByUserIdAndDateRange(
+	List<MainTask> findAllByUserIdAndTaskDateRangeOrderByCreatedAtDesc(
 		@Param("userId") Long userId,
 		@Param("start") LocalDateTime start,
 		@Param("end") LocalDateTime end
