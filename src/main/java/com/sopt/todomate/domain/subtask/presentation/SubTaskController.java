@@ -1,5 +1,6 @@
 package com.sopt.todomate.domain.subtask.presentation;
 
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -7,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sopt.todomate.domain.subtask.application.SubTaskManageUsecase;
+import com.sopt.todomate.domain.subtask.application.dto.SubTaskCompletedCommand;
 import com.sopt.todomate.domain.subtask.application.dto.SubTaskCreateCommand;
+import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCompletedRequest;
 import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateRequest;
 import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateResponse;
 import com.sopt.todomate.global.common.dto.ResponseDto;
@@ -27,5 +30,13 @@ public class SubTaskController {
 		SubTaskCreateResponse response = subTaskManageUsecase.createSubTask(userId, taskId,
 			SubTaskCreateCommand.from(request));
 		return ResponseDto.created(response);
+	}
+
+	@PatchMapping()
+	public ResponseDto<Void> updateSubTask(@RequestHeader Long userId, @RequestHeader Long taskId,
+		@Valid @RequestBody SubTaskCompletedRequest request) {
+		subTaskManageUsecase.updateCompleted(userId, taskId,
+			SubTaskCompletedCommand.from(request));
+		return ResponseDto.noContent();
 	}
 }

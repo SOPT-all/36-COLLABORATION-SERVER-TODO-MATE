@@ -64,4 +64,8 @@ public class SubTask extends BaseEntity {
 		this.content = content;
 	}
 
+	public void updateCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
 }
