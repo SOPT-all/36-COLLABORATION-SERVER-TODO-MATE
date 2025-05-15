@@ -4,18 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
+import com.sopt.todomate.domain.maintask.domain.entity.Importance;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
+import com.sopt.todomate.domain.maintask.domain.entity.RoutineType;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 
 public record MainTaskDetailResponse(
 	Long mainTaskId,
 	String taskContent,
-	LocalDateTime startAt,
-	LocalDateTime endAt,
-	String routineType,
-	int priority,
-	String category,
-	LocalDate taskDate,
+	Importance importance,
+	CategoryType category,
 	boolean completed,
 	List<SubTaskResponse> subTasks
 ) {
@@ -23,12 +22,8 @@ public record MainTaskDetailResponse(
 		return new MainTaskDetailResponse(
 			task.getId(),
 			task.getTaskContent(),
-			task.getStartAt(),
-			task.getEndAt(),
-			task.getRoutineType().name(),
-			task.getImportance().getValue(),
-			task.getCategory().getLabel(),
-			task.getTaskDate().toLocalDate(),
+			task.getImportance(),
+			task.getCategory(),
 			task.isCompleted(),
 			subTasks.stream().map(SubTaskResponse::from).toList()
 		);

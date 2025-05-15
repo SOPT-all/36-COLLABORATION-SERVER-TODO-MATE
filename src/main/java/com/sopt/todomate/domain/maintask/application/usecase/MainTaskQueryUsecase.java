@@ -14,7 +14,6 @@ import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskDetailResponse;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
-import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.service.UserGetService;
 
 import lombok.RequiredArgsConstructor;
