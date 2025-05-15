@@ -13,7 +13,7 @@ public record SubTaskCreateResponse(
 			subTask.getId(),
 			subTask.getContent(),
 			subTask.getCompleted(),
-			subTask.getId()
+			subTask.getMainTask().getId()
 		);
 	}
 }
