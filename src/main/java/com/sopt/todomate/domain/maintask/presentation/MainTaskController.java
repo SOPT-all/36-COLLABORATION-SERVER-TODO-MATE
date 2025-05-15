@@ -14,6 +14,9 @@ import com.sopt.todomate.domain.maintask.application.usecase.MainTaskManageUseca
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskUpdateRequest;
+import com.sopt.todomate.domain.subtask.application.dto.SubTaskCreateCommand;
+import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateRequest;
+import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateResponse;
 import com.sopt.todomate.global.common.dto.ResponseDto;
 
 import jakarta.validation.Valid;
@@ -32,11 +35,18 @@ public class MainTaskController {
 		return ResponseDto.created(response);
 	}
 
+	@PostMapping("/{taskId}")
+	public ResponseDto<SubTaskCreateResponse> createSubTask(@RequestHeader Long userId, @PathVariable Long taskId,
+		@Valid @RequestBody SubTaskCreateRequest request) {
+		SubTaskCreateResponse response = mainTaskManageUsecase.createSubTask(userId, taskId,
+			SubTaskCreateCommand.from(request));
+		return ResponseDto.created(response);
+	}
+
 	@PutMapping("/{taskId}")
-	public ResponseDto<Void> create(@RequestHeader Long userId, @PathVariable Long taskId,
+	public ResponseDto<Void> update(@RequestHeader Long userId, @PathVariable Long taskId,
 		@Valid @RequestBody MainTaskUpdateRequest request) {
-		mainTaskManageUsecase.update(taskId, MainTaskUpdateCommand.from(request),
-			userId);
+		mainTaskManageUsecase.update(userId, taskId, MainTaskUpdateCommand.from(request));
 		return ResponseDto.okWithoutContent();
 	}
 }

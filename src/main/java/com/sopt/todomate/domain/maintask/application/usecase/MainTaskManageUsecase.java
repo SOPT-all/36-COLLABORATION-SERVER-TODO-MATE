@@ -65,7 +65,7 @@ public class MainTaskManageUsecase {
 	}
 
 	@Transactional
-	public void update(long mainTaskId, MainTaskUpdateCommand command, long userId) {
+	public void update(long userId, long mainTaskId, MainTaskUpdateCommand command) {
 		User user = userGetService.findByUserId(userId);
 		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
 		mainTask.updateContent(command.taskContent());
