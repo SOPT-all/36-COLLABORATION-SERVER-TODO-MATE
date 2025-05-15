@@ -14,6 +14,7 @@ import com.sopt.todomate.domain.maintask.application.usecase.MainTaskManageUseca
 import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
+import com.sopt.todomate.domain.subtask.application.dto.SubTaskCompletedCommand;
 import com.sopt.todomate.domain.subtask.application.dto.SubTaskCreateCommand;
 import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
@@ -39,6 +40,8 @@ class SubTaskManageUsecaseTest {
 
 	@Autowired
 	private SubTaskGetService subTaskGetService;
+	@Autowired
+	private SubTaskManageUsecase subTaskManageUsecase;
 
 	@DisplayName("사용자는 서브태스크를 생성 할 수 있다.")
 	@Test
@@ -57,7 +60,7 @@ class SubTaskManageUsecaseTest {
 
 		//when
 
-		SubTaskCreateResponse response = mainTaskManageUsecase.createSubTask(savedUser.getId(), mainTask.getId(),
+		SubTaskCreateResponse response = subTaskManageUsecase.createSubTask(savedUser.getId(), mainTask.getId(),
 			new SubTaskCreateCommand("테스트 컨텐트"));
 
 		//then
@@ -66,5 +69,37 @@ class SubTaskManageUsecaseTest {
 
 		assertThat(subTask.getContent()).isEqualTo("테스트 컨텐트");
 		assertThat(subTask.getCompleted()).isEqualTo(false);
+	}
+
+	@DisplayName("사용자는 서브태스크를 완료하고 완료취소 할 수 있다.")
+	@Test
+	void updateCompleted() {
+		//given
+		// Given - 테스트 사용자 생성 및 저장
+		User testUser = User.builder()
+			.userName("통합테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		MainTask mainTask = mainTaskRepository.save(
+			MainTask.createMainTaskWithoutRoutine("content", CategoryType.CATEGORY1, now, savedUser));
+
+		SubTaskCreateResponse response = subTaskManageUsecase.createSubTask(savedUser.getId(), mainTask.getId(),
+			new SubTaskCreateCommand("테스트 컨텐트"));
+
+		SubTaskCompletedCommand command = new SubTaskCompletedCommand(false);
+
+		//when
+
+		subTaskManageUsecase.updateCompleted(savedUser.getId(), response.id(),
+			command);
+
+		//then
+
+		SubTask subTask = subTaskGetService.findSubTaskById(response.id());
+
+		assertThat(subTask.getCompleted()).isEqualTo(command.completed());
 	}
 }
