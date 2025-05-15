@@ -1,7 +1,6 @@
 package com.sopt.todomate.domain.maintask.application.usecase;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,13 +26,10 @@ public class MainTaskQueryUsecase {
 	private final SubTaskGetService subTaskGetService;
 	private final UserGetService userGetService;
 
-	public List<MainTaskDetailResponse> getTodosByDate(Long userId, LocalDate date) {
+	public List<MainTaskDetailResponse> getTodosByDate(long userId, LocalDate date) {
 		userGetService.findByUserId(userId);
 
-		LocalDateTime start = date.atStartOfDay();
-		LocalDateTime end = date.plusDays(1).atStartOfDay();
-
-		List<MainTask> mainTasks = mainTaskGetService.findAllByUserIdAndDateRange(userId, start, end);
+		List<MainTask> mainTasks = mainTaskGetService.findAllByUserIdAndTaskDate(userId, date);
 		List<Long> mainTaskIds = mainTasks.stream().map(MainTask::getId).toList();
 		List<SubTask> allSubTasks = subTaskGetService.findAllByMainTaskIds(mainTaskIds);
 

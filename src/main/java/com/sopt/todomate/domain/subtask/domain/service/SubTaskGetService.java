@@ -27,6 +27,6 @@ public class SubTaskGetService {
 	}
 
 	public List<SubTask> findAllByMainTaskIds(List<Long> mainTaskIds) {
-		return subTaskRepository.findAllByMainTaskIds(mainTaskIds);
+		return subTaskRepository.findAllByMainTaskInOrderByCreatedAtDesc(mainTaskIds);
 	}
 }
