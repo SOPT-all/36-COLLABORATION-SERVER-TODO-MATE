@@ -8,6 +8,6 @@ public record SubTaskUpdateCommand(
 	boolean completed
 ) {
 	public SubTask toEntity(MainTask mainTask, boolean completed) {
-		return SubTask.create(this.content, mainTask, completed);
+		return SubTask.createDefaultSubTask(this.content, mainTask);
 	}
 }

@@ -81,6 +81,19 @@ public class MainTask extends BaseEntity {
 		this.templateTaskId = templateTaskId;
 	}
 
+	public static MainTask createMainTaskWithoutRoutine(String content, CategoryType category, LocalDateTime taskDate,
+		User user) {
+		return MainTask.builder()
+			.taskContent(content)
+			.category(category)
+			.taskDate(taskDate)
+			.user(user)
+			.completed(false)
+			.importance(Importance.MEDIUM)
+			.routineType(RoutineType.NONE)
+			.build();
+	}
+
 	public void addAuthor(User user) {
 		this.user = user;
 	}

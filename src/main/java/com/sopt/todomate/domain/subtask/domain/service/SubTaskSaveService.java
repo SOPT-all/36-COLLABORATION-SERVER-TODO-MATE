@@ -17,4 +17,9 @@ public class SubTaskSaveService {
 	public List<SubTask> saveAll(List<SubTask> subTasks) {
 		return subTaskRepository.saveAll(subTasks);
 	}
+
+	public SubTask save(SubTask subTask) {
+		return subTaskRepository.save(subTask);
+	}
+
 }

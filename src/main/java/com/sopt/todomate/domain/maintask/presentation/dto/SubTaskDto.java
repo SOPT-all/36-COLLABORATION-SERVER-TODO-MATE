@@ -7,6 +7,6 @@ public record SubTaskDto(
 	boolean completed
 ) {
 	public SubTask toEntity() {
-		return SubTask.create(this.content, null, this.completed);
+		return SubTask.createDefaultSubTask(this.content, null);
 	}
 }

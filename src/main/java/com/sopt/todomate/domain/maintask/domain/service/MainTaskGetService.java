@@ -6,12 +6,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.sopt.todomate.domain.maintask.domain.entity.CategoryType;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
 import com.sopt.todomate.domain.maintask.domain.repository.MainTaskRepository;
 import com.sopt.todomate.domain.maintask.exception.MainTaskNotFoundException;
+import com.sopt.todomate.domain.user.domain.entity.User;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MainTaskGetService {
@@ -33,5 +37,10 @@ public class MainTaskGetService {
 		LocalDateTime start = date.atStartOfDay();
 		LocalDateTime end = date.plusDays(1).atStartOfDay();
 		return mainTaskRepository.findAllByUserIdAndTaskDateRangeOrderByCreatedAtDesc(userId, start, end);
+	}
+
+	public long findAmountByCategory(User user, CategoryType categoryType) {
+		System.out.println(mainTaskRepository.countByCategoryAndUser(categoryType, user));
+		return mainTaskRepository.countByCategoryAndUser(categoryType, user);
 	}
 }
