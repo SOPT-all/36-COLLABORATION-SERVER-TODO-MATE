@@ -29,7 +29,9 @@ public class MainTaskGetService {
 		return mainTaskRepository.findAllByTemplateTaskIdAndTaskDateAfter(templateId, date);
 	}
 
-	public List<MainTask> findAllByUserIdAndDateRange(Long userId, LocalDateTime start, LocalDateTime end) {
-		return mainTaskRepository.findAllByUserIdAndDateRange(userId, start, end);
+	public List<MainTask> findAllByUserIdAndTaskDate(Long userId, LocalDate date) {
+		LocalDateTime start = date.atStartOfDay();
+		LocalDateTime end = date.plusDays(1).atStartOfDay();
+		return mainTaskRepository.findAllByUserIdAndTaskDateRangeOrderByCreatedAtDesc(userId, start, end);
 	}
 }
