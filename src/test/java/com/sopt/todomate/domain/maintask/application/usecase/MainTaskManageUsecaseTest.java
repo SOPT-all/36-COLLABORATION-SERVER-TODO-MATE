@@ -20,8 +20,11 @@ import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.exception.MaxMainTaskException;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
+import com.sopt.todomate.domain.subtask.application.dto.SubTaskCreateCommand;
+import com.sopt.todomate.domain.subtask.domain.entity.SubTask;
 import com.sopt.todomate.domain.subtask.domain.repository.SubTaskRepository;
 import com.sopt.todomate.domain.subtask.domain.service.SubTaskGetService;
+import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateResponse;
 import com.sopt.todomate.domain.user.domain.entity.User;
 import com.sopt.todomate.domain.user.domain.repository.UserRepository;
 
@@ -111,4 +114,33 @@ public class MainTaskManageUsecaseTest {
 			savedUser.getId())).isInstanceOf(MaxMainTaskException.class);
 
 	}
+
+	@DisplayName("사용자는 서브태스크를 생성 할 수 있다.")
+	@Test
+	void createSubTask() {
+		//given
+		// Given - 테스트 사용자 생성 및 저장
+		User testUser = User.builder()
+			.userName("통합테스트유저")
+			.build();
+		User savedUser = userRepository.save(testUser);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		MainTask mainTask = mainTaskRepository.save(
+			MainTask.createMainTaskWithoutRoutine("content", CategoryType.CATEGORY1, now, savedUser));
+
+		//when
+
+		SubTaskCreateResponse response = mainTaskManageUsecase.createSubTask(savedUser.getId(), mainTask.getId(),
+			new SubTaskCreateCommand("테스트 컨텐트"));
+
+		//then
+
+		SubTask subTask = subTaskGetService.findSubTaskById(response.id());
+
+		assertThat(subTask.getContent()).isEqualTo("테스트 컨텐트");
+		assertThat(subTask.getCompleted()).isEqualTo(false);
+	}
+
 }
