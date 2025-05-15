@@ -55,13 +55,13 @@ public class MainTaskManageUsecase {
 	public SubTaskCreateResponse createSubTask(long userId, long mainTaskId, SubTaskCreateCommand command) {
 		User user = userGetService.findByUserId(userId);
 
-		MainTask mainTask = mainTaskGetService.findByMainTaskId(mainTaskId);
+		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
 
 		SubTask subTask = SubTask.createDefaultSubTask(command.content(), mainTask);
 
 		SubTask savedSubTask = subTaskSaveService.save(subTask);
 
-		return SubTaskCreateResponse.of(subTask);
+		return SubTaskCreateResponse.of(savedSubTask);
 	}
 
 	@Transactional
