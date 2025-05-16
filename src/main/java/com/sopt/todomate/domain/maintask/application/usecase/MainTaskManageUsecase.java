@@ -37,7 +37,7 @@ public class MainTaskManageUsecase {
 
 		User user = userGetService.findByUserId(userId);
 
-		if (mainTaskGetService.findAmountByCategory(user, command.category()) >= 2) {
+		if (mainTaskGetService.findAmountByCategory(user, command.category(), command.taskDate()) >= 2) {
 			throw new MaxMainTaskException();
 		}
 

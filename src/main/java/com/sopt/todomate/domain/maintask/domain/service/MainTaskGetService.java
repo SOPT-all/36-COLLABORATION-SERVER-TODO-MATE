@@ -39,8 +39,10 @@ public class MainTaskGetService {
 		return mainTaskRepository.findAllByUserIdAndTaskDateRangeOrderByCreatedAtDesc(userId, start, end);
 	}
 
-	public long findAmountByCategory(User user, CategoryType categoryType) {
-		System.out.println(mainTaskRepository.countByCategoryAndUser(categoryType, user));
-		return mainTaskRepository.countByCategoryAndUser(categoryType, user);
+	public long findAmountByCategory(User user, CategoryType categoryType, LocalDateTime taskDate) {
+		LocalDateTime start = taskDate.toLocalDate().atStartOfDay();
+		LocalDateTime end = start.plusDays(1);
+		
+		return mainTaskRepository.countByCategoryAndUserAndTaskDateBetween(categoryType, user, start, end);
 	}
 }
