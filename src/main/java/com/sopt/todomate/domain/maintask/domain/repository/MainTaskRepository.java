@@ -41,4 +41,6 @@ public interface MainTaskRepository extends JpaRepository<MainTask, Long> {
 	List<MainTask> findAllByTaskDateBetweenAndUser(LocalDateTime start, LocalDateTime end, User user);
 
 	void deleteAllByUser(User user);
+
+	List<MainTask> findAllByUser(User user);
 }

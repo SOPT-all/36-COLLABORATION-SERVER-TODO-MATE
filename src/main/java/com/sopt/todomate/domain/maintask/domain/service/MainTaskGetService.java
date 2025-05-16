@@ -54,4 +54,8 @@ public class MainTaskGetService {
 
 		return mainTaskRepository.findAllByTaskDateBetweenAndUser(start, end, user);
 	}
+
+	public List<MainTask> findAllByUser(User user) {
+		return mainTaskRepository.findAllByUser(user);
+	}
 }

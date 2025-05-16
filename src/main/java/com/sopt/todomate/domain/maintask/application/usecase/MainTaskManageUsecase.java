@@ -84,6 +84,8 @@ public class MainTaskManageUsecase {
 
 		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
 
+		subTaskDeleteService.deleteAllByMainTask(mainTask);
+
 		mainTaskDeleteService.delete(mainTask);
 	}
 
@@ -93,6 +95,8 @@ public class MainTaskManageUsecase {
 
 		List<MainTask> mainTasks = mainTaskGetService.findALlByUserAndDate(user, taskDate);
 
+		subTaskDeleteService.deleteAllByMainTasks(mainTasks);
+
 		mainTaskDeleteService.deleteAll(mainTasks);
 	}
 
@@ -100,7 +104,11 @@ public class MainTaskManageUsecase {
 	public void deleteAll(long userId) {
 		User user = userGetService.findByUserId(userId);
 
-		mainTaskDeleteService.deleteAllByUser(user);
+		List<MainTask> mainTasks = mainTaskGetService.findAllByUser(user);
+
+		subTaskDeleteService.deleteAllByMainTasks(mainTasks);
+
+		mainTaskDeleteService.deleteAll(mainTasks);
 	}
 
 	private MainTask checkAuthorityByMainTaskId(long mainTaskId, User user) {

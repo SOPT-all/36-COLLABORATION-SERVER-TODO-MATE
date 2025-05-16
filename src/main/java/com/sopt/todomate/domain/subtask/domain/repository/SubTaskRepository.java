@@ -22,4 +22,6 @@ public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
 		    ORDER BY s.mainTask.id ASC, s.createdAt DESC
 		""")
 	List<SubTask> findAllByMainTaskInOrderByCreatedAtDesc(@Param("mainTaskIds") List<Long> mainTaskIds);
+
+	void deleteAllByMainTaskIn(List<MainTask> mainTasks);
 }
