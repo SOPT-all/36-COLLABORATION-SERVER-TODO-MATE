@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +55,26 @@ public class MainTaskController {
 	public ResponseDto<Void> update(@RequestHeader Long userId, @PathVariable Long taskId,
 		@Valid @RequestBody MainTaskUpdateRequest request) {
 		mainTaskManageUsecase.update(userId, taskId, MainTaskUpdateCommand.from(request));
+		return ResponseDto.noContent();
+	}
+
+	@DeleteMapping("/{taskId}")
+	public ResponseDto<Void> delete(@RequestHeader Long userId, @PathVariable Long taskId) {
+		mainTaskManageUsecase.delete(userId, taskId);
+		return ResponseDto.noContent();
+	}
+
+	@DeleteMapping()
+	public ResponseDto<Void> deleteAllByDate(@RequestHeader Long userId,
+		@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+
+		mainTaskManageUsecase.deleteAllInDate(userId, date);
+		return ResponseDto.noContent();
+	}
+
+	@DeleteMapping("/all")
+	public ResponseDto<Void> deleteAll(@RequestHeader Long userId) {
+		mainTaskManageUsecase.deleteAll(userId);
 		return ResponseDto.noContent();
 	}
 }
