@@ -37,4 +37,8 @@ public interface MainTaskRepository extends JpaRepository<MainTask, Long> {
 
 	int countByCategoryAndUserAndTaskDateBetween(CategoryType categoryType, User user, LocalDateTime startDate,
 		LocalDateTime endDate);
+
+	List<MainTask> findAllByTaskDateBetweenAndUser(LocalDateTime start, LocalDateTime end, User user);
+
+	void deleteAllByUser(User user);
 }
