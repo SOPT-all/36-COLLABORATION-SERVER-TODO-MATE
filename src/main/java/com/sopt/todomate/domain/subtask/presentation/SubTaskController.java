@@ -15,16 +15,20 @@ import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateRequest;
 import com.sopt.todomate.domain.subtask.presentation.dto.SubTaskCreateResponse;
 import com.sopt.todomate.global.common.dto.ResponseDto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "서브태스크")
 @RestController
 @RequestMapping("/api/v1/sub-tasks")
 @RequiredArgsConstructor
 public class SubTaskController {
 	private final SubTaskManageUsecase subTaskManageUsecase;
 
-	@PostMapping()
+	@PostMapping
+	@Operation(summary = "서브태스크를 생성합니다.")
 	public ResponseDto<SubTaskCreateResponse> createSubTask(@RequestHeader Long userId, @RequestHeader Long taskId,
 		@Valid @RequestBody SubTaskCreateRequest request) {
 		SubTaskCreateResponse response = subTaskManageUsecase.createSubTask(userId, taskId,
@@ -32,7 +36,8 @@ public class SubTaskController {
 		return ResponseDto.created(response);
 	}
 
-	@PatchMapping()
+	@PatchMapping
+	@Operation(summary = "서브태스크의 완료여부를 업데이트 합니다.")
 	public ResponseDto<Void> updateSubTask(@RequestHeader Long userId, @RequestHeader Long taskId,
 		@Valid @RequestBody SubTaskCompletedRequest request) {
 		subTaskManageUsecase.updateCompleted(userId, taskId,

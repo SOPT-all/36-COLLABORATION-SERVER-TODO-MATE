@@ -1,5 +1,6 @@
 package com.sopt.todomate.domain.maintask.application.usecase;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.application.dto.SubTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
+import com.sopt.todomate.domain.maintask.domain.service.MainTaskDeleteService;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskGetService;
 import com.sopt.todomate.domain.maintask.domain.service.MainTaskSaveService;
 import com.sopt.todomate.domain.maintask.exception.AccessDeniedException;
@@ -31,13 +33,14 @@ public class MainTaskManageUsecase {
 	private final SubTaskSaveService subTaskSaveService;
 	private final MainTaskGetService mainTaskGetService;
 	private final SubTaskDeleteService subTaskDeleteService;
+	private final MainTaskDeleteService mainTaskDeleteService;
 
 	@Transactional
 	public MainTaskCreateResponse createMainTask(MainTaskCommand command, long userId) {
 
 		User user = userGetService.findByUserId(userId);
 
-		if (mainTaskGetService.findAmountByCategory(user, command.category()) >= 2) {
+		if (mainTaskGetService.findAmountByCategory(user, command.category(), command.taskDate()) >= 2) {
 			throw new MaxMainTaskException();
 		}
 
@@ -73,6 +76,39 @@ public class MainTaskManageUsecase {
 				subTaskSaveService.saveAll(subTasks);
 			}
 		}
+	}
+
+	@Transactional
+	public void delete(long userId, long mainTaskId) {
+		User user = userGetService.findByUserId(userId);
+
+		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
+
+		subTaskDeleteService.deleteAllByMainTask(mainTask);
+
+		mainTaskDeleteService.delete(mainTask);
+	}
+
+	@Transactional
+	public void deleteAllInDate(long userId, LocalDate taskDate) {
+		User user = userGetService.findByUserId(userId);
+
+		List<MainTask> mainTasks = mainTaskGetService.findALlByUserAndDate(user, taskDate);
+
+		subTaskDeleteService.deleteAllByMainTasks(mainTasks);
+
+		mainTaskDeleteService.deleteAll(mainTasks);
+	}
+
+	@Transactional
+	public void deleteAll(long userId) {
+		User user = userGetService.findByUserId(userId);
+
+		List<MainTask> mainTasks = mainTaskGetService.findAllByUser(user);
+
+		subTaskDeleteService.deleteAllByMainTasks(mainTasks);
+
+		mainTaskDeleteService.deleteAll(mainTasks);
 	}
 
 	private MainTask checkAuthorityByMainTaskId(long mainTaskId, User user) {
