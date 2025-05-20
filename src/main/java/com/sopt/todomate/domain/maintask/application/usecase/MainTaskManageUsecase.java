@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskCompletedCommand;
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.application.dto.SubTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.domain.entity.MainTask;
@@ -133,5 +134,12 @@ public class MainTaskManageUsecase {
 			.toList();
 
 		subTaskSaveService.saveAll(subTasks);
+	}
+
+	@Transactional
+	public void updateCompleted(long userId, long mainTaskId, MainTaskCompletedCommand command) {
+		User user = userGetService.findByUserId(userId);
+		MainTask mainTask = checkAuthorityByMainTaskId(mainTaskId, user);
+		mainTask.updateCompleted(command.completed());
 	}
 }
