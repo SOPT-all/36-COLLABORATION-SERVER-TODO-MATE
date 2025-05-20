@@ -102,6 +102,10 @@ public class MainTask extends BaseEntity {
 		return this.completed;
 	}
 
+	public void updateCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
 	public void updateTemplateTask(long id) {
 		this.templateTaskId = id;
 	}
