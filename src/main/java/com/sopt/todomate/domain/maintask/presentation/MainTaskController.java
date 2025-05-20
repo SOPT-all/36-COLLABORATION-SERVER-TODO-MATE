@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskCommand;
+import com.sopt.todomate.domain.maintask.application.dto.MainTaskCompletedCommand;
 import com.sopt.todomate.domain.maintask.application.dto.MainTaskUpdateCommand;
 import com.sopt.todomate.domain.maintask.application.usecase.MainTaskManageUsecase;
 import com.sopt.todomate.domain.maintask.application.usecase.MainTaskQueryUsecase;
+import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCompletedRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateRequest;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskCreateResponse;
 import com.sopt.todomate.domain.maintask.presentation.dto.MainTaskDetailResponse;
@@ -84,6 +87,16 @@ public class MainTaskController {
 	@Operation(summary = "자신의 모든 메인태스크를 삭제")
 	public ResponseDto<Void> deleteAll(@RequestHeader Long userId) {
 		mainTaskManageUsecase.deleteAll(userId);
+		return ResponseDto.noContent();
+	}
+
+	@PatchMapping()
+	public ResponseDto<Void> updateMainTaskCompleted(
+		@RequestHeader Long userId,
+		@RequestHeader Long taskId,
+		@Valid @RequestBody MainTaskCompletedRequest request) {
+		mainTaskManageUsecase.updateCompleted(userId, taskId,
+			MainTaskCompletedCommand.from(request));
 		return ResponseDto.noContent();
 	}
 }
